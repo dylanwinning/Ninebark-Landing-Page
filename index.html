@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ninebark — The Modern Calculator</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --bg: #F8F6F2;
+      --surface: #FFFFFF;
+      --surface-alt: #F2EFE9;
+      --border: #DDD9D2;
+      --border-dark: #C4BDB4;
+      --text: #1A1410;
+      --muted: #7A7068;
+      --brand: #2A1818;
+      --accent: #2D6148;
+      --accent-light: #E8F0EB;
+      --accent-dim: rgba(45, 97, 72, 0.15);
+      --font-body: 'Inter', system-ui, -apple-system, sans-serif;
+      --font-brand: 'Cormorant Garamond', Georgia, serif;
+      --max-w: 1080px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-body);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── Nav ── */
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 48px;
+      height: 68px;
+      background: rgba(248, 246, 242, 0.92);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      color: var(--brand);
+    }
+
+    .nav-wordmark {
+      font-family: var(--font-brand);
+      font-weight: 300;
+      font-size: 1.4rem;
+      letter-spacing: 0.05em;
+      color: var(--brand);
+      line-height: 1;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 36px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.875rem;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover { color: var(--accent); }
+
+    /* ── Layout ── */
+    .container {
+      max-width: var(--max-w);
+      margin: 0 auto;
+      padding: 0 48px;
+    }
+
+    section { padding: 96px 0; }
+
+    .section-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 20px;
+    }
+
+    .section-label::before {
+      content: '';
+      display: block;
+      width: 20px;
+      height: 1.5px;
+      background: var(--accent);
+      border-radius: 2px;
+      flex-shrink: 0;
+    }
+
+    h1, h2 {
+      letter-spacing: -0.025em;
+      line-height: 1.12;
+      color: var(--text);
+    }
+
+    h1 {
+      font-size: clamp(2.4rem, 5.5vw, 3.8rem);
+      font-weight: 800;
+    }
+
+    h2 {
+      font-size: clamp(1.6rem, 3.5vw, 2.4rem);
+      font-weight: 700;
+      margin-bottom: 16px;
+    }
+
+    /* ── Hero ── */
+    #pitch {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .hero-inner {
+      padding: 120px 0 80px;
+      max-width: 640px;
+    }
+
+    #pitch h1 { margin-bottom: 20px; }
+
+    .pitch-description {
+      font-size: 1.1rem;
+      color: var(--muted);
+      max-width: 460px;
+      margin-bottom: 40px;
+      line-height: 1.75;
+    }
+
+    .cta-group {
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+
+    .btn-primary {
+      background: var(--brand);
+      color: #FFFFFF;
+      font-weight: 600;
+      font-size: 0.9rem;
+      padding: 13px 26px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      text-decoration: none;
+      letter-spacing: 0.01em;
+      transition: background 0.2s, transform 0.15s;
+      display: inline-block;
+    }
+
+    .btn-primary:hover {
+      background: #3D2525;
+      transform: translateY(-1px);
+    }
+
+    .btn-secondary {
+      background: transparent;
+      color: var(--text);
+      font-weight: 500;
+      font-size: 0.9rem;
+      padding: 12px 26px;
+      border: 1.5px solid var(--border-dark);
+      border-radius: 8px;
+      cursor: pointer;
+      text-decoration: none;
+      transition: border-color 0.2s, color 0.2s;
+      display: inline-block;
+    }
+
+    .btn-secondary:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    /* ── Prototype ── */
+    #prototype { border-bottom: 1px solid var(--border); }
+
+    .demo-compare {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      margin: 32px 0 48px;
+    }
+
+    .demo-label {
+      font-size: 0.85rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--text);
+      margin-bottom: 10px;
+      display: block;
+    }
+
+    .demo-box {
+      width: 100%;
+      aspect-ratio: 4 / 3;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--muted);
+      font-size: 0.875rem;
+    }
+
+    .demo-box.is-ninebark {
+      border-color: var(--accent);
+      background: var(--accent-light);
+    }
+
+    @media (max-width: 600px) {
+      .demo-compare { grid-template-columns: 1fr; }
+    }
+
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 24px;
+    }
+
+    .feature-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 32px;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .feature-card:hover {
+      border-color: var(--accent);
+      box-shadow: 0 4px 24px rgba(45, 97, 72, 0.08);
+    }
+
+    .feature-icon {
+      width: 44px;
+      height: 44px;
+      background: var(--accent-light);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 20px;
+      color: var(--accent);
+    }
+
+    .feature-card h3 {
+      font-size: 0.95rem;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .feature-card p {
+      font-size: 0.875rem;
+      color: var(--muted);
+      line-height: 1.65;
+    }
+
+    /* ── About ── */
+    #about { border-bottom: 1px solid var(--border); }
+
+    .about-layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 64px;
+      align-items: start;
+      margin-top: 16px;
+    }
+
+    .about-bio p {
+      color: var(--muted);
+      margin-bottom: 16px;
+      font-size: 0.975rem;
+      line-height: 1.75;
+    }
+
+    .about-links {
+      display: flex;
+      gap: 10px;
+      margin-top: 28px;
+      flex-wrap: wrap;
+    }
+
+    .about-links a {
+      color: var(--accent);
+      text-decoration: none;
+      font-size: 0.82rem;
+      font-weight: 600;
+      border: 1px solid rgba(45, 97, 72, 0.3);
+      padding: 6px 16px;
+      border-radius: 6px;
+      letter-spacing: 0.02em;
+      transition: background 0.2s;
+    }
+
+    .about-links a:hover { background: var(--accent-light); }
+
+    .about-photo {
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      aspect-ratio: 1;
+      overflow: hidden;
+    }
+
+    .about-photo img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    /* ── Contact ── */
+    #contact { background: var(--surface); }
+
+    .contact-intro {
+      color: var(--muted);
+      font-size: 1rem;
+      max-width: 440px;
+      margin-bottom: 40px;
+      line-height: 1.75;
+    }
+
+    form {
+      display: grid;
+      gap: 18px;
+      max-width: 480px;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    label {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--muted);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    input, textarea, select {
+      background: var(--bg);
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      color: var(--text);
+      font-size: 0.925rem;
+      padding: 11px 14px;
+      outline: none;
+      font-family: inherit;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      width: 100%;
+      -webkit-appearance: none;
+      appearance: none;
+    }
+
+    input:focus, textarea:focus, select:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-dim);
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 100px;
+    }
+
+    .form-submit { margin-top: 4px; }
+
+    [data-fs-success] {
+      display: none;
+      background: var(--accent-light);
+      border: 1px solid var(--accent);
+      color: var(--accent);
+      border-radius: 8px;
+      padding: 14px 18px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      max-width: 480px;
+    }
+
+    [data-fs-error] {
+      display: none;
+      color: #b91c1c;
+      font-size: 0.78rem;
+      margin-top: 4px;
+    }
+
+    /* ── Footer ── */
+    footer {
+      padding: 28px 48px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: var(--muted);
+      font-size: 0.82rem;
+      border-top: 1px solid var(--border);
+      background: var(--bg);
+    }
+
+    .footer-brand {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      text-decoration: none;
+      color: var(--brand);
+    }
+
+    .footer-wordmark {
+      font-family: var(--font-brand);
+      font-weight: 300;
+      font-size: 1.1rem;
+      letter-spacing: 0.05em;
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 860px) {
+      nav { padding: 0 24px; }
+      .container { padding: 0 24px; }
+      .nav-links { display: none; }
+
+      .hero-inner {
+        padding: 100px 0 64px;
+      }
+
+      .about-layout { grid-template-columns: 1fr; gap: 40px; }
+      .about-photo { max-width: 200px; }
+
+      .form-row { grid-template-columns: 1fr; }
+
+      footer {
+        flex-direction: column;
+        gap: 12px;
+        padding: 24px;
+        text-align: center;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Navigation -->
+<nav>
+  <a href="#pitch" class="nav-brand">
+    <svg width="30" height="30" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <g transform="rotate(0, 40, 40)">
+        <line x1="40" y1="36" x2="40" y2="27" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        <ellipse cx="40" cy="16" rx="7" ry="10" fill="currentColor"/>
+      </g>
+      <g transform="rotate(60, 40, 40)">
+        <line x1="40" y1="36" x2="40" y2="27" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        <ellipse cx="40" cy="16" rx="7" ry="10" fill="currentColor"/>
+      </g>
+      <g transform="rotate(120, 40, 40)">
+        <line x1="40" y1="36" x2="40" y2="27" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        <ellipse cx="40" cy="16" rx="7" ry="10" fill="currentColor"/>
+      </g>
+      <g transform="rotate(180, 40, 40)">
+        <line x1="40" y1="36" x2="40" y2="27" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        <ellipse cx="40" cy="16" rx="7" ry="10" fill="currentColor"/>
+      </g>
+      <g transform="rotate(240, 40, 40)">
+        <line x1="40" y1="36" x2="40" y2="27" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        <ellipse cx="40" cy="16" rx="7" ry="10" fill="currentColor"/>
+      </g>
+      <g transform="rotate(300, 40, 40)">
+        <line x1="40" y1="36" x2="40" y2="27" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        <ellipse cx="40" cy="16" rx="7" ry="10" fill="currentColor"/>
+      </g>
+      <circle cx="40" cy="40" r="4" fill="currentColor"/>
+    </svg>
+    <span class="nav-wordmark">Ninebark</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#prototype">Prototype</a></li>
+    <li><a href="#about">Founder</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- Hero -->
+<section id="pitch">
+  <div class="container">
+    <div class="hero-inner">
+
+      <!-- Left: copy -->
+      <div>
+        <h1>Accessible Calculator Built for Modern Students</h1>
+        <p class="pitch-description">
+          Ninebark modernizes the calculator for the smartphone generation: natural language input, customizable for educators, and accessible to all students.
+        </p>
+        <div class="cta-group">
+          <a href="#contact" class="btn-primary">Get in Touch</a>
+          <a href="#prototype" class="btn-secondary">See the Prototype</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- Prototype -->
+<section id="prototype">
+  <div class="container">
+    <p class="section-label">Prototype</p>
+
+    <div class="demo-compare">
+      <div>
+        <p class="demo-label">Traditional Calculators</p>
+        <div class="demo-box">[ demo ]</div>
+      </div>
+      <div>
+        <p class="demo-label">Ninebark</p>
+        <div class="demo-box is-ninebark">[ demo ]</div>
+      </div>
+    </div>
+
+    <div class="feature-grid">
+      <div class="feature-card">
+        <div class="feature-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <rect x="5" y="2" width="14" height="20" rx="3"/>
+            <circle cx="12" cy="17" r="1" fill="currentColor" stroke="none"/>
+          </svg>
+        </div>
+        <h3>Touchscreen UI</h3>
+        <p>A smartphone-style interface students can pick up instantly.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+          </svg>
+        </div>
+        <h3>Natural Language Input</h3>
+        <p>Enter problems in plain English.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <line x1="4" y1="6" x2="20" y2="6"/>
+            <line x1="4" y1="12" x2="20" y2="12"/>
+            <line x1="4" y1="18" x2="20" y2="18"/>
+            <circle cx="9"  cy="6"  r="2.5" fill="var(--surface)" stroke="currentColor"/>
+            <circle cx="16" cy="12" r="2.5" fill="var(--surface)" stroke="currentColor"/>
+            <circle cx="11" cy="18" r="2.5" fill="var(--surface)" stroke="currentColor"/>
+          </svg>
+        </div>
+        <h3>Educator Controls</h3>
+        <p>Instructors choose exactly which functions and accessibility features are available.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="12" cy="5" r="1.5" fill="currentColor" stroke="none"/>
+            <path d="M12 7v6"/>
+            <path d="M7 10h10"/>
+            <path d="M9 13l-2 5"/>
+            <path d="M15 13l2 5"/>
+          </svg>
+        </div>
+        <h3>Accessibility Features</h3>
+        <p>Built-in support for screen readers, high contrast modes, and adjustable text sizes so every student can participate.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Founder -->
+<section id="about">
+  <div class="container">
+    <p class="section-label">Founder</p>
+    <div class="about-layout">
+      <div class="about-bio">
+        <h2>Dylan Winning</h2>
+        <p>
+          Dylan is a student at Haverford College studying Mathematics and Philosophy. He is building Ninebark through the Haverford Entrepreneurship Program's Innovation Incubator.
+        </p>
+        <p>
+          In his free time, Dylan enjoys ultimate frisbee, cooking, weightlifting, and camping.
+        </p>
+        <div class="about-links">
+          <a href="https://www.linkedin.com/in/dylanwinning" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+          <a href="https://github.com/dylanwinning" target="_blank" rel="noopener noreferrer">GitHub</a>
+          <a href="mailto:dwinning@haverford.edu">Email</a>
+        </div>
+      </div>
+      <div class="about-photo">
+        <img src="founder.jpg" alt="Dylan Winning, founder of Ninebark" />
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Contact -->
+<section id="contact">
+  <div class="container">
+    <p class="section-label">Contact</p>
+    <h2>Get in Touch</h2>
+    <p class="contact-intro">
+      Questions, feedback, or interested in collaborating? 
+    </p>
+    <div data-fs-success>Message sent. Thanks for reaching out!</div>
+
+    <form id="contact-form">
+      <div data-fs-error></div>
+      <div class="form-row">
+        <div class="field">
+          <label for="fname">First name</label>
+          <input id="fname" name="first_name" type="text" autocomplete="given-name" required />
+        </div>
+        <div class="field">
+          <label for="lname">Last name</label>
+          <input id="lname" name="last_name" type="text" autocomplete="family-name" required />
+        </div>
+      </div>
+      <div class="field">
+        <label for="email">Email</label>
+        <input id="email" name="email" type="email" autocomplete="email" required data-fs-field />
+        <span data-fs-error="email"></span>
+      </div>
+      <div class="field">
+        <label for="role">I am a…</label>
+        <select id="role" name="role" required>
+          <option value="">Select one</option>
+          <option value="student">Student</option>
+          <option value="educator">Educator</option>
+          <option value="investor">Investor</option>
+          <option value="partner">Collaborator</option>
+          <option value="press">Press</option>
+          <option value="other">Other</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="message">Message</label>
+        <textarea id="message" name="message" data-fs-field required></textarea>
+        <span data-fs-error="message"></span>
+      </div>
+      <div class="form-submit">
+        <button type="submit" class="btn-primary" data-fs-submit-btn>Send Message</button>
+      </div>
+    </form>
+
+    <script>
+      window.formspree = window.formspree || function () { (formspree.q = formspree.q || []).push(arguments); };
+      formspree('initForm', { formElement: '#contact-form', formId: 'mnjykdkw' });
+    </script>
+    <script src="https://unpkg.com/@formspree/ajax@1" defer></script>
+  </div>
+</section>
+
+<footer>
+  <a href="#pitch" class="footer-brand">
+    <svg width="22" height="22" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <g transform="rotate(0, 40, 40)"><line x1="40" y1="36" x2="40" y2="27" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><ellipse cx="40" cy="16" rx="7" ry="10" fill="currentColor"/></g>
+      <g transform="rotate(60, 40, 40)"><line x1="40" y1="36" x2="40" y2="27" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><ellipse cx="40" cy="16" rx="7" ry="10" fill="currentColor"/></g>
+      <g transform="rotate(120, 40, 40)"><line x1="40" y1="36" x2="40" y2="27" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><ellipse cx="40" cy="16" rx="7" ry="10" fill="currentColor"/></g>
+      <g transform="rotate(180, 40, 40)"><line x1="40" y1="36" x2="40" y2="27" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><ellipse cx="40" cy="16" rx="7" ry="10" fill="currentColor"/></g>
+      <g transform="rotate(240, 40, 40)"><line x1="40" y1="36" x2="40" y2="27" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><ellipse cx="40" cy="16" rx="7" ry="10" fill="currentColor"/></g>
+      <g transform="rotate(300, 40, 40)"><line x1="40" y1="36" x2="40" y2="27" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><ellipse cx="40" cy="16" rx="7" ry="10" fill="currentColor"/></g>
+      <circle cx="40" cy="40" r="4" fill="currentColor"/>
+    </svg>
+    <span class="footer-wordmark">Ninebark</span>
+  </a>
+  <span>Updated Jun 2026</span>
+</footer>
+
+</body>
+</html>
