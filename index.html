@@ -3,9 +3,10 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Ninebark — The Modern Calculator</title>
+  <title>Ninebark</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <style>
     *, *::before, *::after {
@@ -41,10 +42,32 @@
       -webkit-font-smoothing: antialiased;
     }
 
+    /* ── Alert Banner ── */
+    .alert-banner {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 101;
+      background: var(--accent);
+      color: #fff;
+      text-align: center;
+      font-size: 0.82rem;
+      font-weight: 500;
+      padding: 9px 24px;
+      letter-spacing: 0.01em;
+    }
+
+    .alert-banner a {
+      color: #fff;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+
     /* ── Nav ── */
     nav {
       position: fixed;
-      top: 0;
+      top: 36px;
       left: 0;
       right: 0;
       z-index: 100;
@@ -550,11 +573,15 @@
     <div class="demo-compare">
       <div>
         <p class="demo-label">Traditional Calculators</p>
-        <div class="demo-box">[ demo ]</div>
+        <div class="demo-box" style="padding: 0; overflow: hidden; position: relative;">
+          <video src="TI1var.mp4" controls loop playsinline style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; background: #fff;"></video>
+        </div>
       </div>
       <div>
         <p class="demo-label">Ninebark</p>
-        <div class="demo-box is-ninebark">[ demo ]</div>
+        <div class="demo-box is-ninebark" style="padding: 0; overflow: hidden; position: relative;">
+          <video src="NinebarkDemo.mov" controls loop playsinline style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; background: #fff;"></video>
+        </div>
       </div>
     </div>
 
@@ -566,7 +593,7 @@
             <circle cx="12" cy="17" r="1" fill="currentColor" stroke="none"/>
           </svg>
         </div>
-        <h3>Touchscreen UI</h3>
+        <h3>Familiar UI</h3>
         <p>A smartphone-style interface students can pick up instantly.</p>
       </div>
 
@@ -606,7 +633,7 @@
           </svg>
         </div>
         <h3>Accessibility Features</h3>
-        <p>Built-in support for screen readers, high contrast modes, and adjustable text sizes so every student can participate.</p>
+        <p>Voice input and audio output.</p>
       </div>
     </div>
   </div>
@@ -622,9 +649,7 @@
         <p>
           Dylan is a student at Haverford College studying Mathematics and Philosophy. He is building Ninebark through the Haverford Entrepreneurship Program's Innovation Incubator.
         </p>
-        <p>
-          In his free time, Dylan enjoys ultimate frisbee, cooking, weightlifting, and camping.
-        </p>
+        
         <div class="about-links">
           <a href="https://www.linkedin.com/in/dylanwinning" target="_blank" rel="noopener noreferrer">LinkedIn</a>
           <a href="https://github.com/dylanwinning" target="_blank" rel="noopener noreferrer">GitHub</a>
