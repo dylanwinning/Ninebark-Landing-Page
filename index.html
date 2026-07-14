@@ -50,32 +50,10 @@
       -webkit-font-smoothing: antialiased;
     }
 
-    /* ── Alert Banner ── */
-    .alert-banner {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      z-index: 101;
-      background: var(--accent);
-      color: #fff;
-      text-align: center;
-      font-size: 0.82rem;
-      font-weight: 500;
-      padding: 9px 24px;
-      letter-spacing: 0.01em;
-    }
-
-    .alert-banner a {
-      color: #fff;
-      text-decoration: underline;
-      text-underline-offset: 3px;
-    }
-
     /* ── Nav ── */
     nav {
       position: fixed;
-      top: 36px;
+      top: 0;
       left: 0;
       right: 0;
       z-index: 100;
@@ -172,19 +150,174 @@
     }
 
     /* ── Hero ── */
-    #pitch {
+    #home {
+      position: relative;
+      overflow: hidden;
       min-height: 100vh;
       display: flex;
       align-items: center;
       border-bottom: 1px solid var(--border);
     }
 
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 48px;
+      align-items: center;
+      width: 100%;
+    }
+
     .hero-inner {
       padding: 120px 0 80px;
       max-width: 640px;
+      opacity: 0;
+      animation: heroInnerIn 0.9s ease forwards;
+      animation-delay: 0.15s;
     }
 
-    #pitch h1 { margin-bottom: 20px; }
+    @keyframes heroInnerIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    #home h1 { margin-bottom: 20px; line-height: 1.3; }
+
+    /* ── Hero example carousel (placeholder) ── */
+    .hero-examples {
+      position: relative;
+      z-index: 0;
+      width: 100%;
+    }
+
+    /* Radial glow behind the carousel card — a cool accent-green ambient
+       wash plus a soft warm highlight layered on top, like a light source
+       behind glass. Both are blurred for a soft, premium feel rather than
+       a flat gradient disc. */
+    .hero-examples::before,
+    .hero-examples::after {
+      content: '';
+      position: absolute;
+      z-index: -1;
+      pointer-events: none;
+    }
+
+    .hero-examples::before {
+      inset: -160px;
+      background: radial-gradient(circle at 50% 42%,
+        rgba(45, 97, 72, 0.30),
+        rgba(45, 97, 72, 0.14) 35%,
+        rgba(45, 97, 72, 0.05) 58%,
+        transparent 78%);
+      filter: blur(6px);
+    }
+
+    .hero-examples::after {
+      inset: -70px;
+      background: radial-gradient(circle at 44% 36%, rgba(233, 201, 138, 0.22), transparent 62%);
+      filter: blur(20px);
+    }
+
+    .hero-examples-track {
+      position: relative;
+      min-height: 320px;
+    }
+
+    .hero-example-slide {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 14px;
+      opacity: 0;
+      transform: translateY(8px);
+      pointer-events: none;
+      transition: opacity 0.5s ease, transform 0.5s ease;
+    }
+
+    .hero-example-slide.is-active {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: auto;
+    }
+
+    /* Reuses the same nb-result-card / nb-grid-btn / nb-text-field /
+       nb-mic-btn classes as the rest of the product mockups on this page. */
+    .hero-example-inputbar {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      width: min(500px, calc(100vw - 672px));
+    }
+
+    /* The carousel column is only 1/3 of the hero (the text takes the other
+       2/3), narrower than the card's natural 500px — so the card overflows
+       the column rather than shrinking to fit it (.hero-example-slide's
+       align-items:center keeps that overflow centered/symmetric). Below
+       ~1172px viewport width an uncapped 500px card would overflow past the
+       actual browser edge and get clipped, so it's capped at
+       100vw - 672px — the exact point (derived from the container's
+       1080px max-width, 48px padding, 48px gap, and 2:1 column ratio) where
+       the card's overflow would otherwise cross the viewport edge. At
+       normal/wide viewports (>=1172px) this cap never engages and the card
+       stays exactly 500px, matching the intro. */
+    .hero-example-slide .nb-result-card {
+      width: min(500px, calc(100vw - 672px));
+      transition: transform 0.45s ease, box-shadow 0.45s ease, opacity 0.45s ease;
+    }
+
+    /* Depth cue: while the example is "typing", the input bar reads as the
+       active/elevated element and the result card recedes; once "entered",
+       the result card takes the elevation and the input bar settles back. */
+    .hero-example-inputbar {
+      transition: transform 0.45s ease, filter 0.45s ease;
+    }
+
+    .hero-example-slide.is-typing .nb-result-card {
+      transform: scale(0.97) translateY(5px);
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+      opacity: 0.8;
+    }
+
+    .hero-example-slide.is-typing .hero-example-inputbar {
+      transform: scale(1.035);
+      filter: drop-shadow(0 14px 24px rgba(0, 0, 0, 0.12));
+    }
+
+    .hero-example-slide.is-result .nb-result-card {
+      transform: scale(1) translateY(0);
+      box-shadow: 0 20px 44px rgba(0, 0, 0, 0.14);
+      opacity: 1;
+    }
+
+    .hero-example-slide.is-result .hero-example-inputbar {
+      transform: scale(1);
+      filter: none;
+    }
+
+    .hero-examples-dots {
+      display: flex;
+      gap: 8px;
+      justify-content: center;
+      margin-top: 20px;
+    }
+
+    .hero-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--border-dark);
+      border: none;
+      padding: 0;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.2s;
+    }
+
+    .hero-dot.is-active {
+      background: var(--accent);
+      transform: scale(1.25);
+    }
 
     .pitch-description {
       font-size: 1.1rem;
@@ -239,6 +372,301 @@
       color: var(--accent);
     }
 
+    /* ── Problem ── */
+    #problem {
+      border-bottom: 1px solid var(--border);
+      padding: 140px 0;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* Faded calculator-button wallpaper — the same button-illustration
+       language the old hero intro animation used, brought back as a quiet
+       background texture instead of a foreground scene. Scattered buttons
+       thin out and clear away from the bottom-right, where the Ninebark
+       side of the comparison card sits below — as if that card is pushing
+       the clutter out of its own space. */
+    .problem-calc-bg {
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+      opacity: 0.16;
+      pointer-events: none;
+    }
+
+    .problem-calc-btn {
+      position: absolute;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Arial Narrow', Arial, sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      color: #E0E0E0;
+      background: linear-gradient(180deg, #2E2E2E 0%, #252525 100%);
+      border: 1px solid #3E3E3E;
+      border-bottom: 3px solid #111;
+      border-radius: 3px;
+      padding: 5px 11px;
+      white-space: nowrap;
+      user-select: none;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.35);
+    }
+    .problem-calc-btn.pk2  { background: linear-gradient(180deg,#1B5EA8,#144A8A); border-color:#2070C0; border-bottom-color:#0A2D55; color:#fff; }
+    .problem-calc-btn.pka  { background: linear-gradient(180deg,#1E7A2E,#165E22); border-color:#26903A; border-bottom-color:#0B3A14; color:#fff; }
+    .problem-calc-btn.pkar { background: linear-gradient(180deg,#5C5C6E,#484858); border-color:#6A6A7C; border-bottom-color:#30303E; font-size:10px; padding:5px 8px; }
+
+    @keyframes pcFloatA { 0%,100%{transform:translate(0,0) rotate(-1.5deg)} 30%{transform:translate(22px,-26px) rotate(2deg)} 65%{transform:translate(-16px,18px) rotate(-4deg)} }
+    @keyframes pcFloatB { 0%,100%{transform:translate(0,0) rotate(2deg)} 40%{transform:translate(-26px,20px) rotate(-2deg)} 75%{transform:translate(18px,-16px) rotate(4deg)} }
+    @keyframes pcFloatC { 0%,100%{transform:translate(0,0) rotate(3deg)} 25%{transform:translate(20px,24px) rotate(-1deg)} 60%{transform:translate(-22px,-18px) rotate(5deg)} }
+    .problem-calc-btn.pfa { animation: pcFloatA 9s ease-in-out infinite; }
+    .problem-calc-btn.pfb { animation: pcFloatB 10.5s ease-in-out infinite; }
+    .problem-calc-btn.pfc { animation: pcFloatC 8s ease-in-out infinite; }
+
+    @media (max-width: 860px) {
+      .problem-calc-bg { display: none; }
+    }
+
+    #problem .container {
+      max-width: 900px;
+    }
+
+    .problem-intro {
+      text-align: center;
+      margin-bottom: 100px;
+    }
+
+    #problem .section-label {
+      justify-content: center;
+    }
+
+    .problem-headline {
+      font-size: clamp(2rem, 4.2vw, 3.1rem);
+      font-weight: 800;
+      letter-spacing: -0.025em;
+      line-height: 1.25;
+      color: var(--text);
+      max-width: 720px;
+      margin: 0 auto 24px;
+    }
+
+    .problem-sub {
+      font-size: 1.1rem;
+      color: var(--muted);
+      max-width: 560px;
+      margin: 0 auto;
+      line-height: 1.75;
+    }
+
+    /* Scroll-reveal: shared utility, fades + lifts elements into place as
+       they enter the viewport. */
+    .scroll-reveal {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1), transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .scroll-reveal.is-visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ── Problem: curriculum timeline ── */
+    .problem-timeline {
+      max-width: 720px;
+      margin: 0 auto 110px;
+    }
+
+    .timeline-labels {
+      display: flex;
+      margin-bottom: 12px;
+    }
+
+    .timeline-label {
+      font-size: 0.85rem;
+      font-weight: 600;
+      line-height: 1.4;
+      padding-right: 16px;
+      box-sizing: border-box;
+    }
+
+    .timeline-label--calc { color: var(--muted); }
+    .timeline-label--math { color: var(--accent); }
+
+    .timeline-bar {
+      display: flex;
+      width: 100%;
+      height: 16px;
+      border-radius: 999px;
+      overflow: hidden;
+      background: var(--surface-alt);
+      box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.04);
+    }
+
+    .timeline-segment {
+      height: 100%;
+      width: 0%;
+      transition: width 1.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .scroll-reveal.is-visible .timeline-segment--calc { width: 72%; }
+    .scroll-reveal.is-visible .timeline-segment--math { width: 28%; }
+
+    .timeline-segment--calc {
+      background: linear-gradient(90deg, #C4BDB4, #B3A99B);
+    }
+
+    .timeline-segment--math {
+      background: var(--accent);
+    }
+
+    .timeline-ticks {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 14px;
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--border-dark);
+    }
+
+    /* ── Problem: real example comparison ── */
+    .problem-example {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      gap: 40px;
+      align-items: start;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 56px 48px;
+      box-shadow: 0 4px 28px rgba(26, 20, 16, 0.05);
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .example-divider {
+      width: 1px;
+      align-self: stretch;
+      background: var(--border);
+    }
+
+    .example-col {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+
+    .example-label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-bottom: 24px;
+    }
+
+    /* Traditional side: a subtle "aged device" treatment — desaturated,
+       sharp-cornered, faintly pressed-in chips and a mono label, instead of
+       any garish "broken UI" effect. Nothing here is a real screenshot or
+       illustration, just color/shape/type doing the aging. */
+    .example-col--traditional {
+      filter: saturate(0.72) sepia(0.06);
+    }
+
+    .example-col--traditional .example-label {
+      color: #8a8270;
+      font-family: 'Courier New', Courier, monospace;
+    }
+
+    .example-col--ninebark .example-label { color: var(--accent); }
+
+    .example-steps {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .example-step {
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      color: #5c5646;
+      background: #eae3d2;
+      border: 1.5px solid #b7ad98;
+      border-radius: 4px;
+      padding: 7px 16px;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5), inset 0 -1px 1px rgba(0, 0, 0, 0.1);
+    }
+
+    .example-arrow {
+      color: var(--border-dark);
+      font-size: 0.8rem;
+      line-height: 1;
+    }
+
+    .example-col--traditional .example-arrow { color: #ab9f88; }
+
+    /* The Ninebark side reuses the exact nb-result-card / input-bar markup
+       and classes from the prototype (hero) so the formatting is identical
+       — this is its own layout class (not .hero-example-inputbar) since
+       that one's width formula is tuned to the hero's specific grid. */
+    .example-inputbar {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      width: 100%;
+      margin-top: 20px;
+      text-align: left;
+    }
+
+    /* Ninebark side: crisp, elevated, quietly glowing — the counterpoint to
+       the flat, dated calculator chips on the left. */
+    .example-col--ninebark .nb-result-card {
+      width: 100%;
+      text-align: left;
+      position: relative;
+      z-index: 0;
+      border-color: rgba(45, 97, 72, 0.16);
+      box-shadow: 0 16px 34px rgba(45, 97, 72, 0.12), 0 2px 8px rgba(26, 20, 16, 0.05);
+    }
+
+    .example-col--ninebark .nb-result-card::before {
+      content: '';
+      position: absolute;
+      inset: -26px;
+      z-index: -1;
+      background: radial-gradient(circle at 50% 38%, rgba(45, 97, 72, 0.14), transparent 70%);
+      filter: blur(18px);
+      pointer-events: none;
+    }
+
+    /* This column is narrower than the hero's card, so the query can wrap
+       to two lines — let the input pill grow with it instead of clipping
+       at the prototype's fixed 44px single-line height. */
+    .example-inputbar .nb-text-field {
+      height: auto;
+      min-height: 44px;
+      padding-top: 10px;
+      padding-bottom: 10px;
+      box-shadow: 0 1px 3px rgba(26, 20, 16, 0.05);
+    }
+
+    @media (max-width: 640px) {
+      .problem-example {
+        grid-template-columns: 1fr;
+        padding: 40px 28px;
+      }
+      .example-divider {
+        width: 100%;
+        height: 1px;
+      }
+    }
+
     /* ── Prototype ── */
     #prototype { border-bottom: 1px solid var(--border); }
 
@@ -281,47 +709,497 @@
       .demo-compare { grid-template-columns: 1fr; }
     }
 
-    .feature-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 24px;
+    /* ── Editorial callouts beneath the embedded prototype — deliberately
+       quiet: no cards, icons, or shadows, just typography and hairline
+       dividers, so the prototype above stays the visual focal point.
+       Centered and narrower than the full-width prototype, with the
+       question/answer text itself left-aligned inside. ── */
+    .demo-callouts {
+      max-width: 640px;
+      margin: 96px auto 0;
+      text-align: left;
     }
 
-    .feature-card {
+    .demo-callouts-head {
+      max-width: 460px;
+      margin-bottom: 48px;
+    }
+
+    .demo-callouts-title {
+      font-size: 1.35rem;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      text-align: left;
+      margin-bottom: 10px;
+    }
+
+    .demo-callouts-sub {
+      color: var(--muted);
+      font-size: 0.95rem;
+      line-height: 1.7;
+      text-align: left;
+      margin: 0;
+    }
+
+    .demo-callout-list {
+      border-top: 1px solid var(--border);
+    }
+
+    .demo-callout {
+      display: grid;
+      grid-template-columns: 190px 1fr;
+      gap: 6px 40px;
+      padding: 30px 0;
+      border-bottom: 1px solid var(--border);
+      text-align: left;
+    }
+
+    .demo-callout h3 {
+      font-size: 0.975rem;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      color: var(--text);
+    }
+
+    .demo-callout p {
+      font-size: 0.9rem;
+      color: var(--muted);
+      line-height: 1.7;
+      max-width: 480px;
+      margin: 0;
+    }
+
+    @media (max-width: 640px) {
+      .demo-callout {
+        grid-template-columns: 1fr;
+        gap: 6px;
+        padding: 22px 0;
+      }
+    }
+
+    /* ── See Ninebark in Action (limited embedded demo) ── */
+    #demo { border-bottom: 1px solid var(--border); }
+
+    #demo .container { max-width: 960px; text-align: center; }
+
+    #demo h2 {
+      text-align: center;
+      margin-bottom: 12px;
+    }
+
+    .demo-sub {
+      text-align: center;
+      color: var(--muted);
+      max-width: 520px;
+      margin: 0 auto 36px;
+      line-height: 1.7;
+    }
+
+    .demo-chips {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 40px;
+    }
+
+    .demo-chip {
+      font-family: var(--font-body);
+      font-size: 0.92rem;
+      font-weight: 500;
+      color: var(--text);
       background: var(--surface);
       border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 32px;
-      transition: border-color 0.2s, box-shadow 0.2s;
+      border-radius: 999px;
+      padding: 12px 24px;
+      cursor: pointer;
+      transition: border-color 0.2s, color 0.2s, background 0.2s;
     }
 
-    .feature-card:hover {
+    .demo-chip:hover {
       border-color: var(--accent);
-      box-shadow: 0 4px 24px rgba(45, 97, 72, 0.08);
+      color: var(--accent);
+      background: var(--accent-light);
     }
 
-    .feature-icon {
-      width: 44px;
-      height: 44px;
-      background: var(--accent-light);
-      border-radius: 10px;
+    /* Wrapper carries the glow and has no background of its own — the glow
+       must sit behind the card as ambient light, not wash across its face.
+       (A glow painted via ::before/::after directly on .demo-app would sit
+       on top of .demo-app's own background per stacking rules, since a
+       negative z-index child still paints above its parent's background.) */
+    .demo-app-glow {
+      position: relative;
+      z-index: 0;
+    }
+
+    .demo-app-glow::before,
+    .demo-app-glow::after {
+      content: '';
+      position: absolute;
+      z-index: -1;
+      pointer-events: none;
+    }
+
+    /* Ambient glow for the embedded prototype — softer and more evenly
+       centered than .hero-examples' off-center blob, since this is a large,
+       symmetric, centered card rather than an informal carousel tile. A
+       wide, heavily-blurred, low-opacity wash reads as quiet studio light
+       rather than a colored smudge. */
+    .demo-app-glow::before {
+      inset: -90px;
+      background: radial-gradient(ellipse at 50% 46%,
+        rgba(45, 97, 72, 0.24),
+        rgba(45, 97, 72, 0.10) 45%,
+        transparent 75%);
+      filter: blur(34px);
+    }
+
+    .demo-app-glow::after {
+      inset: -50px;
+      background: radial-gradient(ellipse at 50% 42%, rgba(233, 201, 138, 0.14), transparent 68%);
+      filter: blur(38px);
+    }
+
+    .demo-app {
+      position: relative;
+      z-index: 0;
+      background: #FFFFFF;
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 64px 56px;
+      box-shadow: 0 4px 32px rgba(26, 20, 16, 0.05);
+      display: flex;
+      flex-direction: column;
+      min-height: 540px;
+      margin-bottom: 64px;
+    }
+
+    .demo-result-area {
+      flex: 1;
       display: flex;
       align-items: center;
       justify-content: center;
-      margin-bottom: 20px;
-      color: var(--accent);
+      padding: 20px 0;
     }
 
-    .feature-card h3 {
+    .demo-placeholder {
+      color: var(--muted);
       font-size: 0.95rem;
+      text-align: center;
+      max-width: 320px;
+      line-height: 1.7;
+    }
+
+    .demo-result-area .nb-result-card {
+      width: 100%;
+      max-width: 540px;
+      text-align: left;
+      animation: demoResultIn 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    @keyframes demoResultIn {
+      from { opacity: 0; transform: translateY(14px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .demo-limit-message {
+      max-width: 380px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.95rem;
+      line-height: 1.7;
+      padding: 8px 4px;
+    }
+
+    .demo-graph {
+      margin-top: 4px;
+    }
+
+    .demo-graph svg {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    .demo-inputbar {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      width: 100%;
+      max-width: 540px;
+      margin: 0 auto;
+    }
+
+    .demo-input {
+      flex: 1;
+      height: 44px;
+      padding: 0 16px;
+      border-radius: 12px;
+      border: 1px solid #e7e5e4;
+      background: #fafaf9;
+      font-size: 0.875rem;
+      color: #1c1917;
+      font-family: var(--font-body);
+      min-width: 0;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .demo-input:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-dim);
+    }
+
+    .demo-input::placeholder { color: #a8a29e; }
+
+    /* This demo's result card has real working capabilities — Reuse re-fills
+       the input, the speaker reads the result aloud (with a "speaking" state
+       matching the real button), and the Decimal/Fraction pill actually
+       switches the displayed value — instead of the decorative, static
+       versions used elsewhere on the page. Colors match the product's own
+       green (#174518), not this landing page's --accent. Scoped to this
+       result area only. */
+    #demo-result-area .nb-action,
+    #demo-result-area .nb-speaker-btn {
+      font-family: inherit;
+      cursor: pointer;
+      transition: color 0.2s ease, background 0.2s ease;
+    }
+
+    #demo-result-area .nb-action:hover {
+      color: #174518;
+    }
+
+    #demo-result-area .nb-speaker-btn:hover {
+      color: #174518;
+    }
+
+    #demo-result-area .nb-speaker-btn.is-speaking {
+      color: #174518;
+      background: #17451815;
+    }
+
+    #demo-result-area .nb-decfrac-label {
+      cursor: pointer;
+      color: #a8a29e;
+      transition: color 0.2s ease;
+    }
+
+    #demo-result-area .nb-decfrac-label.is-active { color: #174518; }
+
+    #demo-result-area .nb-toggle-pill {
+      cursor: pointer;
+      transition: background 0.2s ease;
+    }
+
+    #demo-result-area .nb-toggle-pill::after {
+      transition: left 0.2s ease;
+    }
+
+    #demo-result-area .nb-toggle-pill.is-fraction {
+      background: #174518;
+    }
+
+    #demo-result-area .nb-toggle-pill.is-fraction::after {
+      left: calc(100% - 18px);
+    }
+
+    /* ── Solve results (SolveRenderer) ── */
+    .nb-solve-label {
+      font-size: 10px;
       font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #a8a29e;
       margin-bottom: 8px;
     }
 
-    .feature-card p {
+    .nb-solve-row {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+      padding: 2px 0;
+    }
+
+    .nb-solve-sym {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      font-weight: 700;
+      font-size: 1.5rem;
+      color: #174518;
+    }
+
+    .nb-solve-eq {
+      color: #a8a29e;
+      font-size: 1.25rem;
+    }
+
+    .nb-solve-value {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      font-weight: 700;
+      font-size: 1.5rem;
+      color: #1c1917;
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* ── Graphed action card ── */
+    .nb-graphed-line {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .nb-graphed-label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #174518;
+      flex-shrink: 0;
+    }
+
+    .nb-graphed-code {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
       font-size: 0.875rem;
-      color: var(--muted);
-      line-height: 1.65;
+      color: #57534e;
+      word-break: break-all;
+    }
+
+    .nb-graphed-caption {
+      color: #a8a29e;
+      font-size: 0.75rem;
+      margin-top: 4px;
+    }
+
+    /* ── Graph panel (matches GraphPanel.tsx's canvas rendering) ── */
+    .demo-graph-result {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      max-width: 540px;
+    }
+
+    .demo-graph-panel {
+      margin-top: 16px;
+      background: #fafaf9;
+      border: 1px solid #e7e5e4;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    .demo-graph-readout {
+      display: flex;
+      align-items: baseline;
+      gap: 32px;
+      padding: 12px 16px;
+      background: #fff;
+      border-bottom: 1px solid #e7e5e4;
+      min-height: 46px;
+    }
+
+    .demo-graph-readout-empty {
+      display: flex;
+      align-items: baseline;
+      gap: 32px;
+      opacity: 0.35;
+    }
+
+    .demo-graph-readout-label {
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #a8a29e;
+      margin-bottom: 2px;
+    }
+
+    .demo-graph-readout-value {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      font-size: 0.95rem;
+      color: #1c1917;
+      line-height: 1;
+    }
+
+    .demo-graph-readout-value.muted { color: #a8a29e; }
+
+    .demo-graph-canvas-wrap { position: relative; }
+
+    .demo-graph-canvas {
+      width: 100%;
+      height: auto;
+      display: block;
+      cursor: crosshair;
+      touch-action: none;
+    }
+
+    .demo-graph-tooltip {
+      position: absolute;
+      transform: translate(-50%, -140%);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 12px;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      font-weight: 500;
+      white-space: nowrap;
+      color: #fff;
+      background: #1c1917;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .demo-graph-tooltip-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #174518;
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      flex-shrink: 0;
+    }
+
+    .demo-graph-tooltip-sep { opacity: 0.4; }
+
+    .demo-graph-zoom {
+      position: absolute;
+      bottom: 12px;
+      right: 12px;
+      display: flex;
+      flex-direction: column;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+      border: 1px solid var(--border);
+    }
+
+    .demo-graph-zoom-btn {
+      width: 32px;
+      height: 32px;
+      background: #fff;
+      border: none;
+      border-bottom: 1px solid var(--border);
+      color: #57534e;
+      font-size: 1.1rem;
+      line-height: 1;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-body);
+      transition: background 0.15s ease;
+    }
+
+    .demo-graph-zoom-btn:last-child { border-bottom: none; }
+    .demo-graph-zoom-btn:hover { background: #fafaf9; }
+
+    @media (max-width: 860px) {
+      .demo-app { padding: 36px 24px; min-height: 460px; }
+      .feature-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    @media (max-width: 560px) {
+      .feature-grid { grid-template-columns: 1fr; }
     }
 
     /* ── About ── */
@@ -377,14 +1255,296 @@
       display: block;
     }
 
+    /* ── Pilot Program ── */
+    #pilot { border-bottom: 1px solid var(--border); }
+
+    #pilot .section-label { justify-content: center; }
+
+    .pilot-intro { text-align: center; }
+
+    .pilot-headline {
+      font-size: clamp(1.9rem, 4vw, 2.6rem);
+      font-weight: 800;
+      letter-spacing: -0.025em;
+      line-height: 1.2;
+      max-width: 620px;
+      margin: 0 auto 20px;
+    }
+
+    /* Same soft ambient glow as the hero carousel — scaled way down and
+       kept quiet, just a faint accent hugging the text rather than a
+       spotlight. Scoped to an inner span (not the h2 itself) so the glow
+       hugs the actual text width instead of the h2's full block width. */
+    .pilot-headline-glow {
+      position: relative;
+      display: inline-block;
+    }
+
+    .pilot-headline-glow::before {
+      content: '';
+      position: absolute;
+      inset: -21px -33px;
+      z-index: -1;
+      pointer-events: none;
+      background: radial-gradient(ellipse at 50% 50%,
+        rgba(45, 97, 72, 0.22),
+        rgba(45, 97, 72, 0.085) 45%,
+        transparent 72%);
+      filter: blur(17px);
+    }
+
+    .pilot-sub {
+      font-size: 1.05rem;
+      color: var(--muted);
+      max-width: 560px;
+      margin: 0 auto;
+      line-height: 1.75;
+    }
+
+    .pilot-columns {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 56px;
+      max-width: 980px;
+      margin: 72px auto 0;
+      padding-top: 48px;
+      border-top: 1px solid var(--border);
+    }
+
+    .pilot-col-label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 18px;
+    }
+
+    .pilot-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .pilot-list li {
+      position: relative;
+      padding-left: 18px;
+      font-size: 0.925rem;
+      color: var(--text);
+      line-height: 1.65;
+    }
+
+    .pilot-list li::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0.6em;
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: var(--accent);
+    }
+
+    .pilot-col-text {
+      font-size: 0.925rem;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    @media (max-width: 860px) {
+      .pilot-columns { grid-template-columns: 1fr; gap: 40px; margin-top: 56px; }
+    }
+
+    .pilot-note {
+      max-width: 620px;
+      margin: 64px auto 0;
+      text-align: center;
+      color: var(--muted);
+      font-size: 1rem;
+      line-height: 1.75;
+    }
+
+    .pilot-cta {
+      text-align: center;
+      margin-top: 48px;
+    }
+
+    .pilot-cta-text {
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 20px;
+    }
+
+    /* Wrapper carries the glow (no background of its own) so it sits behind
+       the button rather than washing across its opaque face — same fix as
+       the embedded prototype's glow. */
+    .pilot-email-glow {
+      position: relative;
+      display: inline-block;
+    }
+
+    .pilot-email-glow::before {
+      content: '';
+      position: absolute;
+      inset: -30px -42px;
+      z-index: -1;
+      pointer-events: none;
+      background: radial-gradient(ellipse at 50% 50%,
+        rgba(45, 97, 72, 0.38),
+        rgba(45, 97, 72, 0.16) 45%,
+        transparent 74%);
+      filter: blur(22px);
+    }
+
+    /* ── FAQs ── */
+    #faqs { border-bottom: 1px solid var(--border); }
+
+    #faqs .section-label { justify-content: center; }
+
+    .faqs-intro { text-align: center; }
+
+    .faqs-headline {
+      font-size: clamp(1.9rem, 4vw, 2.6rem);
+      font-weight: 800;
+      letter-spacing: -0.025em;
+    }
+
+    .faq-list {
+      max-width: 700px;
+      margin: 72px auto 0;
+      padding-top: 48px;
+      border-top: 1px solid var(--border);
+      text-align: left;
+    }
+
+    .faq-item {
+      padding: 28px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .faq-item:last-child { border-bottom: none; }
+
+    /* Native <details>/<summary> — no JS needed for the expand/collapse. */
+    .faq-question {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      font-size: 1.05rem;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      text-align: left;
+      cursor: pointer;
+      list-style: none;
+    }
+
+    .faq-question::-webkit-details-marker { display: none; }
+
+    .faq-question::after {
+      content: '+';
+      flex-shrink: 0;
+      font-size: 1.3rem;
+      font-weight: 400;
+      color: var(--accent);
+      line-height: 1;
+      transition: transform 0.25s ease;
+    }
+
+    .faq-item[open] .faq-question::after {
+      content: '+';
+      transform: rotate(45deg);
+    }
+
+    .faq-item-body {
+      padding-top: 16px;
+    }
+
+    .faq-answer {
+      font-size: 0.95rem;
+      color: var(--muted);
+      line-height: 1.75;
+      max-width: 600px;
+      text-align: left;
+      margin: 0;
+    }
+
+    .faq-item:last-child .faq-answer,
+    .faq-item:last-child .faq-signature {
+      font-style: italic;
+    }
+
+    .faq-inline-btn {
+      display: inline-flex;
+      align-items: center;
+      border: 1px solid var(--accent);
+      color: var(--accent);
+      font-weight: 600;
+      font-size: 0.85rem;
+      padding: 5px 15px;
+      border-radius: 999px;
+      text-decoration: none;
+      margin-right: 4px;
+      transition: background 0.2s, color 0.2s;
+    }
+
+    .faq-inline-btn:hover {
+      background: var(--accent);
+      color: #fff;
+    }
+
+    .faq-signature {
+      font-size: 0.9rem;
+      color: var(--muted);
+      margin-top: 16px;
+    }
+
+    .faq-founder {
+      display: grid;
+      grid-template-columns: 140px 1fr;
+      gap: 32px;
+      align-items: start;
+    }
+
+    .faq-founder-photo {
+      margin: 0;
+    }
+
+    .faq-founder-photo img {
+      width: 100%;
+      aspect-ratio: 1;
+      object-fit: cover;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      display: block;
+    }
+
+    .faq-founder-photo figcaption {
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-top: 10px;
+      line-height: 1.4;
+    }
+
+    @media (max-width: 560px) {
+      .faq-founder { grid-template-columns: 1fr; gap: 20px; }
+      .faq-founder-photo { max-width: 140px; }
+    }
+
     /* ── Contact ── */
     #contact { background: var(--surface); }
+
+    #contact .container { text-align: center; }
+
+    #contact .section-label { justify-content: center; }
 
     .contact-intro {
       color: var(--muted);
       font-size: 1rem;
       max-width: 440px;
-      margin-bottom: 40px;
+      margin: 0 auto 40px;
       line-height: 1.75;
     }
 
@@ -392,6 +1552,8 @@
       display: grid;
       gap: 18px;
       max-width: 480px;
+      margin: 0 auto;
+      text-align: left;
     }
 
     .form-row {
@@ -451,6 +1613,8 @@
       font-size: 0.9rem;
       font-weight: 500;
       max-width: 480px;
+      margin: 0 auto 18px;
+      text-align: center;
     }
 
     [data-fs-error] {
@@ -487,15 +1651,279 @@
       letter-spacing: 0.05em;
     }
 
+    .footer-right {
+      display: flex;
+      align-items: center;
+      gap: 22px;
+    }
+
+    .footer-social {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .footer-social-link {
+      display: flex;
+      color: var(--muted);
+      transition: color 0.2s;
+    }
+
+    .footer-social-link:hover { color: var(--accent); }
+
+    .nb-result-card {
+      background: #fff;
+      border: 1px solid #f5f5f4;
+      border-radius: 16px;
+      padding: 20px;
+      width: 100%;
+      max-width: 500px;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+    }
+    .nb-result-query {
+      font-size: 0.875rem;
+      color: #78716c;
+      margin-bottom: 12px;
+      line-height: 1.625;
+    }
+    .nb-result-interp {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 12px;
+    }
+    .nb-interp-label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      color: #174518;
+      text-transform: uppercase;
+      margin-top: 3px;
+      flex-shrink: 0;
+    }
+    .nb-interp-code {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      font-size: 0.875rem;
+      color: #57534e;
+      line-height: 1.625;
+      word-break: break-all;
+    }
+    .nb-result-value {
+      font-size: 2.25rem;
+      font-weight: 700;
+      color: #1c1917;
+      line-height: 1.25;
+      margin-top: 4px;
+      margin-bottom: 0;
+      word-break: break-all;
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* Stacked mixed-number fraction (e.g. 5¾) — mirrors ComputationCard's
+       StackedFraction: numerator over a rule over the denominator, inline
+       with the whole number, at 0.6em. */
+    .nb-stacked-fraction {
+      display: inline-flex;
+      flex-direction: column;
+      align-items: center;
+      line-height: 1;
+      vertical-align: middle;
+      margin: 0 2px;
+      font-size: 0.6em;
+    }
+    .nb-stacked-fraction .nb-frac-den {
+      border-top: 1px solid currentColor;
+      width: 100%;
+      text-align: center;
+    }
+
+    /* Recall — click the value to paste it into the input, matching
+       ComputationCard's onRecall. */
+    #demo-result-area .nb-recall {
+      position: relative;
+      cursor: pointer;
+    }
+    #demo-result-area .nb-recall-hint {
+      position: absolute;
+      right: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      opacity: 0;
+      transition: opacity 0.15s ease;
+      font-size: 10px;
+      font-weight: 500;
+      color: #a8a29e;
+      white-space: nowrap;
+      pointer-events: none;
+    }
+    #demo-result-area .nb-recall:hover .nb-recall-hint {
+      opacity: 1;
+    }
+    .nb-result-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 12px;
+    }
+    .nb-result-footer-left {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .nb-action {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.025em;
+      color: #a8a29e;
+      background: transparent;
+      border: none;
+      border-radius: 8px;
+      padding: 4px 8px;
+      cursor: default;
+    }
+    .nb-speaker-btn {
+      width: 28px;
+      height: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #a8a29e;
+      border-radius: 8px;
+    }
+    .nb-result-footer-right {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .nb-decfrac-label {
+      font-size: 10px;
+      font-weight: 600;
+    }
+    .nb-toggle-pill {
+      display: inline-block;
+      width: 36px;
+      height: 20px;
+      background: #d6d3d1;
+      border-radius: 10px;
+      vertical-align: middle;
+      position: relative;
+      flex-shrink: 0;
+    }
+    .nb-toggle-pill::after {
+      content: '';
+      position: absolute;
+      left: 2px; top: 2px;
+      width: 16px; height: 16px;
+      background: #fff;
+      border-radius: 50%;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.15);
+    }
+
+    .nb-grid-btn {
+      flex-shrink: 0;
+      width: 44px; height: 44px;
+      background: #174518;
+      border: none;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: default;
+      color: #fff;
+    }
+    .nb-text-field {
+      flex: 1;
+      height: 44px;
+      padding: 0 16px;
+      border-radius: 12px;
+      border: 1px solid #e7e5e4;
+      background: #fafaf9;
+      font-size: 0.875rem;
+      color: #1c1917;
+      font-family: var(--font-body);
+      display: flex;
+      align-items: center;
+      min-width: 0;
+    }
+    .nb-mic-btn {
+      flex-shrink: 0;
+      width: 44px; height: 44px;
+      border-radius: 50%;
+      border: 1px solid #e7e5e4;
+      background: transparent;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #a8a29e;
+      cursor: default;
+      transition: background 0.15s, color 0.15s, border-color 0.15s;
+    }
+    .nb-mic-wrap { position: relative; flex-shrink: 0; }
+    .nb-mic-btn.nb-mic-live { cursor: pointer; }
+    .nb-mic-btn.nb-mic-live:focus-visible { outline: 2px solid #174518; outline-offset: 2px; }
+    .nb-mic-btn.is-listening {
+      border: none;
+      background: #174518;
+      color: #fff;
+      animation: micPulse 1.2s ease-in-out infinite;
+    }
+    @keyframes micPulse {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(23, 69, 24, 0.4); }
+      50%       { box-shadow: 0 0 0 8px rgba(23, 69, 24, 0); }
+    }
+    .nb-mic-error {
+      position: absolute;
+      bottom: 100%;
+      right: 0;
+      margin-bottom: 8px;
+      font-size: 0.75rem;
+      color: #dc2626;
+      background: #fff;
+      border: 1px solid #fee2e2;
+      border-radius: 8px;
+      padding: 6px 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      white-space: nowrap;
+      pointer-events: none;
+      z-index: 10;
+    }
+
+    .nb-cursor {
+      display: inline-block;
+      width: 2px;
+      height: 14px;
+      background: #1c1917;
+      border-radius: 1px;
+      vertical-align: middle;
+      animation: cursorBlink 0.85s ease infinite;
+    }
+    @keyframes cursorBlink { 0%,49%{opacity:1} 50%,100%{opacity:0} }
+
     /* ── Responsive ── */
     @media (max-width: 860px) {
       nav { padding: 0 24px; }
       .container { padding: 0 24px; }
       .nav-links { display: none; }
 
+      .hero-grid {
+        grid-template-columns: 1fr;
+        gap: 8px;
+      }
+
       .hero-inner {
         padding: 100px 0 64px;
       }
+
+      .hero-examples { display: none; }
+
+      #problem { padding: 90px 0; }
+      .problem-intro { margin-bottom: 64px; }
+      .problem-timeline { margin-bottom: 72px; }
+      .problem-example { padding: 40px 28px; }
 
       .about-layout { grid-template-columns: 1fr; gap: 40px; }
       .about-photo { max-width: 200px; }
@@ -512,11 +1940,6 @@
   </style>
 </head>
 <body>
-
-<!-- Alert Banner -->
-<div class="alert-banner">
-  Prototype built. Now seeking seed funding. Contact <a href="mailto:dwinning@haverford.edu">dwinning@haverford.edu</a>
-</div>
 
 <!-- Navigation -->
 <nav>
@@ -551,127 +1974,476 @@
     <span class="nav-wordmark">Ninebark</span>
   </a>
   <ul class="nav-links">
-    <li><a href="#prototype">Prototype</a></li>
-    <li><a href="#about">Founder</a></li>
+    <li><a href="#problem">The Problem</a></li>
+    <li><a href="#demo">See Ninebark in Action</a></li>
+    <li><a href="#pilot">Pilot Program</a></li>
+    <li><a href="#faqs">FAQs</a></li>
     <li><a href="#contact">Contact</a></li>
   </ul>
 </nav>
 
-<!-- Hero -->
-<section id="pitch">
-  <div class="container">
-    <div class="hero-inner">
+<!-- Home -->
+<section id="home">
 
-      <!-- Left: copy -->
-      <div>
-        <h1>Accessible Calculator Built for Modern Students</h1>
+  <div class="container">
+    <div class="hero-grid">
+      <div class="hero-inner">
+        <h1>The calculator students already know how to use.</h1>
         <p class="pitch-description">
-          Ninebark modernizes the calculator for the smartphone generation: natural language input, customizable for educators, and accessible to all students.
+          Ninebark is an accessible natural language calculator that helps students spend less time learning calculator menus and more time learning mathematics.
         </p>
         <div class="cta-group">
-          <a href="#contact" class="btn-primary">Get in Touch</a>
-          <a href="#prototype" class="btn-secondary">See the Prototype</a>
+          <a href="#demo" class="btn-primary">Try the Prototype</a>
+          <a href="#pilot" class="btn-secondary">Become a Pilot Partner</a>
         </div>
       </div>
 
+      <div class="hero-examples" id="hero-examples">
+        <div class="hero-examples-track">
+          <div class="hero-example-slide is-active">
+            <div class="nb-result-card">
+              <div class="nb-result-query">mean of 4, 7, 11, 3</div>
+              <div class="nb-result-interp">
+                <span class="nb-interp-label">Interpreted as</span>
+                <code class="nb-interp-code">mean({4, 7, 11, 3})</code>
+              </div>
+              <div class="nb-result-value">6.25</div>
+              <div class="nb-result-footer">
+                <div class="nb-result-footer-left">
+                  <span class="nb-action">
+                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 14 4 19 9 24"/><path d="M20 9a9 9 0 0 0-9 9v1"/></svg>
+                    Reuse
+                  </span>
+                  <span class="nb-speaker-btn">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>
+                  </span>
+                </div>
+                <div class="nb-result-footer-right">
+                  <span class="nb-decfrac-label" style="color:#174518">Decimal</span>
+                  <span class="nb-toggle-pill"></span>
+                  <span class="nb-decfrac-label" style="color:#a8a29e">Fraction</span>
+                </div>
+              </div>
+            </div>
+            <div class="hero-example-inputbar">
+              <button class="nb-grid-btn" tabindex="-1" aria-hidden="true">
+                <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true">
+                  <rect x="1.5" y="1.5" width="15" height="15" rx="2"/>
+                  <line x1="9" y1="1.5" x2="9" y2="16.5"/>
+                  <line x1="1.5" y1="9" x2="16.5" y2="9"/>
+                </svg>
+              </button>
+              <span class="nb-text-field"><span class="hero-typed" data-query="mean of 4, 7, 11, 3"></span><span class="nb-cursor"></span></span>
+              <button class="nb-mic-btn" tabindex="-1" aria-hidden="true">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
+                  <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+                  <line x1="12" y1="19" x2="12" y2="23"/>
+                  <line x1="8" y1="23" x2="16" y2="23"/>
+                </svg>
+              </button>
+            </div>
+          </div>
+          <div class="hero-example-slide">
+            <div class="nb-result-card">
+              <div class="nb-result-query">solve x+6=10</div>
+              <div class="nb-result-interp">
+                <span class="nb-interp-label">Interpreted as</span>
+                <code class="nb-interp-code">solve((x + 6)=10)</code>
+              </div>
+              <div class="nb-solve-block">
+                <p class="nb-solve-label">Equation Solution</p>
+                <div class="nb-solve-row">
+                  <span class="nb-solve-sym">x</span>
+                  <span class="nb-solve-eq">=</span>
+                  <span class="nb-solve-value">4</span>
+                </div>
+              </div>
+              <div class="nb-result-footer">
+                <div class="nb-result-footer-left">
+                  <span class="nb-action">
+                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 14 4 19 9 24"/><path d="M20 9a9 9 0 0 0-9 9v1"/></svg>
+                    Reuse
+                  </span>
+                  <span class="nb-speaker-btn">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>
+                  </span>
+                </div>
+              </div>
+            </div>
+            <div class="hero-example-inputbar">
+              <button class="nb-grid-btn" tabindex="-1" aria-hidden="true">
+                <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true">
+                  <rect x="1.5" y="1.5" width="15" height="15" rx="2"/>
+                  <line x1="9" y1="1.5" x2="9" y2="16.5"/>
+                  <line x1="1.5" y1="9" x2="16.5" y2="9"/>
+                </svg>
+              </button>
+              <span class="nb-text-field"><span class="hero-typed" data-query="solve x+6=10"></span><span class="nb-cursor"></span></span>
+              <button class="nb-mic-btn" tabindex="-1" aria-hidden="true">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
+                  <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+                  <line x1="12" y1="19" x2="12" y2="23"/>
+                  <line x1="8" y1="23" x2="16" y2="23"/>
+                </svg>
+              </button>
+            </div>
+          </div>
+          <div class="hero-example-slide">
+            <div class="nb-result-card">
+              <div class="nb-result-query">20% of 85</div>
+              <div class="nb-result-interp">
+                <span class="nb-interp-label">Interpreted as</span>
+                <code class="nb-interp-code">((20 / 100) * 85)</code>
+              </div>
+              <div class="nb-result-value">17</div>
+              <div class="nb-result-footer">
+                <div class="nb-result-footer-left">
+                  <span class="nb-action">
+                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 14 4 19 9 24"/><path d="M20 9a9 9 0 0 0-9 9v1"/></svg>
+                    Reuse
+                  </span>
+                  <span class="nb-speaker-btn">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>
+                  </span>
+                </div>
+                <div class="nb-result-footer-right">
+                  <span class="nb-decfrac-label" style="color:#174518">Decimal</span>
+                  <span class="nb-toggle-pill"></span>
+                  <span class="nb-decfrac-label" style="color:#a8a29e">Fraction</span>
+                </div>
+              </div>
+            </div>
+            <div class="hero-example-inputbar">
+              <button class="nb-grid-btn" tabindex="-1" aria-hidden="true">
+                <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true">
+                  <rect x="1.5" y="1.5" width="15" height="15" rx="2"/>
+                  <line x1="9" y1="1.5" x2="9" y2="16.5"/>
+                  <line x1="1.5" y1="9" x2="16.5" y2="9"/>
+                </svg>
+              </button>
+              <span class="nb-text-field"><span class="hero-typed" data-query="20% of 85"></span><span class="nb-cursor"></span></span>
+              <button class="nb-mic-btn" tabindex="-1" aria-hidden="true">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
+                  <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+                  <line x1="12" y1="19" x2="12" y2="23"/>
+                  <line x1="8" y1="23" x2="16" y2="23"/>
+                </svg>
+              </button>
+            </div>
+          </div>
+          <div class="hero-example-slide">
+            <div class="nb-result-card">
+              <div class="nb-result-query">cos of pi radians</div>
+              <div class="nb-result-interp">
+                <span class="nb-interp-label">Interpreted as</span>
+                <code class="nb-interp-code">cos(pi rad)</code>
+              </div>
+              <div class="nb-result-value">-1</div>
+              <div class="nb-result-footer">
+                <div class="nb-result-footer-left">
+                  <span class="nb-action">
+                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 14 4 19 9 24"/><path d="M20 9a9 9 0 0 0-9 9v1"/></svg>
+                    Reuse
+                  </span>
+                  <span class="nb-speaker-btn">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>
+                  </span>
+                </div>
+                <div class="nb-result-footer-right">
+                  <span class="nb-decfrac-label" style="color:#174518">Decimal</span>
+                  <span class="nb-toggle-pill"></span>
+                  <span class="nb-decfrac-label" style="color:#a8a29e">Fraction</span>
+                </div>
+              </div>
+            </div>
+            <div class="hero-example-inputbar">
+              <button class="nb-grid-btn" tabindex="-1" aria-hidden="true">
+                <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true">
+                  <rect x="1.5" y="1.5" width="15" height="15" rx="2"/>
+                  <line x1="9" y1="1.5" x2="9" y2="16.5"/>
+                  <line x1="1.5" y1="9" x2="16.5" y2="9"/>
+                </svg>
+              </button>
+              <span class="nb-text-field"><span class="hero-typed" data-query="cos of pi radians"></span><span class="nb-cursor"></span></span>
+              <button class="nb-mic-btn" tabindex="-1" aria-hidden="true">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
+                  <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+                  <line x1="12" y1="19" x2="12" y2="23"/>
+                  <line x1="8" y1="23" x2="16" y2="23"/>
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="hero-examples-dots">
+          <button class="hero-dot is-active" aria-label="Example 1"></button>
+          <button class="hero-dot" aria-label="Example 2"></button>
+          <button class="hero-dot" aria-label="Example 3"></button>
+          <button class="hero-dot" aria-label="Example 4"></button>
+        </div>
+      </div>
     </div>
   </div>
 </section>
 
-<!-- Prototype -->
-<section id="prototype">
+<!-- The Problem -->
+<section id="problem">
+  <div class="problem-calc-bg" aria-hidden="true">
+    <div class="problem-calc-btn pfa"      style="left:6%;top:10%">STAT</div>
+    <div class="problem-calc-btn pk2 pfb"  style="left:88%;top:6%">2nd</div>
+    <div class="problem-calc-btn pfc"      style="left:18%;top:34%">MODE</div>
+    <div class="problem-calc-btn pfa"      style="left:70%;top:14%">CLEAR</div>
+    <div class="problem-calc-btn pfb"      style="left:3%;top:44%">STO→</div>
+    <div class="problem-calc-btn pfc"      style="left:34%;top:8%">VARS</div>
+    <div class="problem-calc-btn pfa"      style="left:58%;top:38%">WINDOW</div>
+    <div class="problem-calc-btn pka pfb"  style="left:92%;top:40%">ENTER</div>
+    <div class="problem-calc-btn pkar pfc" style="left:46%;top:18%">▲</div>
+    <div class="problem-calc-btn pkar pfa" style="left:40%;top:46%">▼</div>
+    <div class="problem-calc-btn pfb"      style="left:12%;top:24%">7</div>
+    <div class="problem-calc-btn pfc"      style="left:82%;top:26%">0</div>
+    <div class="problem-calc-btn pfa"      style="left:60%;top:46%">÷</div>
+    <div class="problem-calc-btn pfb"      style="left:25%;top:48%">GRAPH</div>
+    <div class="problem-calc-btn pfc"      style="left:76%;top:6%">TRACE</div>
+    <div class="problem-calc-btn pfa"      style="left:8%;top:64%">QUIT</div>
+    <div class="problem-calc-btn pfb"      style="left:30%;top:82%">DEL</div>
+    <div class="problem-calc-btn pfc"      style="left:18%;top:72%">LOG</div>
+    <div class="problem-calc-btn pfa"      style="left:38%;top:60%">SIN</div>
+    <div class="problem-calc-btn pfb"      style="left:6%;top:90%">(−)</div>
+  </div>
   <div class="container">
-    <p class="section-label">Prototype</p>
 
-    <div class="demo-compare">
-      <div>
-        <p class="demo-label">Traditional Calculators</p>
-        <div class="demo-box" style="padding: 0; overflow: hidden; position: relative;">
-          <video src="TI1var.mp4" controls loop playsinline style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; background: #fff;"></video>
+    <div class="problem-intro scroll-reveal">
+      <p class="section-label">The Problem</p>
+      <h2 class="problem-headline">Students should learn mathematics,<br>not calculator menus.</h2>
+      <p class="problem-sub">Traditional calculators require students to memorize button sequences and navigate complex interfaces before they can solve mathematical problems.</p>
+    </div>
+
+    <div class="problem-timeline scroll-reveal">
+      <div class="timeline-labels">
+        <div class="timeline-label timeline-label--calc" style="width:72%">Learning the calculator's menus and syntax</div>
+        <div class="timeline-label timeline-label--math" style="width:28%">Learning mathematics</div>
+      </div>
+      <div class="timeline-bar">
+        <div class="timeline-segment timeline-segment--calc"></div>
+        <div class="timeline-segment timeline-segment--math"></div>
+      </div>
+      <div class="timeline-ticks">
+        <span>Start of semester</span>
+        <span>End of semester</span>
+      </div>
+    </div>
+
+    <div class="problem-example scroll-reveal">
+      <div class="example-col example-col--traditional">
+        <p class="example-label">Traditional Calculator</p>
+        <div class="example-steps">
+          <span class="example-step">STAT</span>
+          <span class="example-arrow">↓</span>
+          <span class="example-step">EDIT</span>
+          <span class="example-arrow">↓</span>
+          <span class="example-step">Enter values</span>
+          <span class="example-arrow">↓</span>
+          <span class="example-step">STAT</span>
+          <span class="example-arrow">↓</span>
+          <span class="example-step">CALC</span>
+          <span class="example-arrow">↓</span>
+          <span class="example-step">Mean</span>
         </div>
       </div>
-      <div>
-        <p class="demo-label">Ninebark</p>
-        <div class="demo-box is-ninebark" style="padding: 0; overflow: hidden; position: relative;">
-          <video src="NinebarkDemo.mov" controls loop playsinline style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; background: #fff;"></video>
+      <div class="example-divider"></div>
+      <div class="example-col example-col--ninebark">
+        <p class="example-label">Ninebark</p>
+        <div class="example-inputbar">
+          <span class="nb-text-field">mean of 4, 8, 12</span>
+        </div>
+        <span class="example-arrow">↓</span>
+        <div class="nb-result-card">
+          <div class="nb-result-query">mean of 4, 8, 12</div>
+          <div class="nb-result-interp">
+            <span class="nb-interp-label">Interpreted as</span>
+            <code class="nb-interp-code">mean({4, 8, 12})</code>
+          </div>
+          <div class="nb-result-value">8</div>
         </div>
       </div>
     </div>
 
-    <div class="feature-grid">
-      <div class="feature-card">
-        <div class="feature-icon">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <rect x="5" y="2" width="14" height="20" rx="3"/>
-            <circle cx="12" cy="17" r="1" fill="currentColor" stroke="none"/>
-          </svg>
-        </div>
-        <h3>Familiar UI</h3>
-        <p>A smartphone-style interface students can pick up instantly.</p>
-      </div>
+  </div>
+</section>
 
-      <div class="feature-card">
-        <div class="feature-icon">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
-          </svg>
-        </div>
-        <h3>Natural Language Input</h3>
-        <p>Enter problems in plain English.</p>
-      </div>
+<!-- See Ninebark in Action -->
+<section id="demo">
+  <div class="container">
+    <p class="section-label">See Ninebark in Action</p>
+    <h2>Try it yourself</h2>
+    <p class="demo-sub">This is a limited demonstration of Ninebark. Try one of the five example inputs below.</p>
 
-      <div class="feature-card">
-        <div class="feature-icon">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <line x1="4" y1="6" x2="20" y2="6"/>
-            <line x1="4" y1="12" x2="20" y2="12"/>
-            <line x1="4" y1="18" x2="20" y2="18"/>
-            <circle cx="9"  cy="6"  r="2.5" fill="var(--surface)" stroke="currentColor"/>
-            <circle cx="16" cy="12" r="2.5" fill="var(--surface)" stroke="currentColor"/>
-            <circle cx="11" cy="18" r="2.5" fill="var(--surface)" stroke="currentColor"/>
-          </svg>
-        </div>
-        <h3>Educator Controls</h3>
-        <p>Instructors choose exactly which functions and accessibility features are available.</p>
-      </div>
+    <div class="demo-chips" id="demo-chips">
+      <button class="demo-chip" data-query="mean of 2, 4, 8, 9">mean of 2, 4, 8, 9</button>
+      <button class="demo-chip" data-query="solve 2x+3=9">solve 2x+3=9</button>
+      <button class="demo-chip" data-query="sin of 60 degrees">sin of 60 degrees</button>
+      <button class="demo-chip" data-query="64 percent of 176">64 percent of 176</button>
+      <button class="demo-chip" data-query="graph 3x plus 6">graph 3x plus 6</button>
+    </div>
 
-      <div class="feature-card">
-        <div class="feature-icon">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <circle cx="12" cy="5" r="1.5" fill="currentColor" stroke="none"/>
-            <path d="M12 7v6"/>
-            <path d="M7 10h10"/>
-            <path d="M9 13l-2 5"/>
-            <path d="M15 13l2 5"/>
+    <div class="demo-app-glow">
+    <div class="demo-app">
+      <div class="demo-result-area" id="demo-result-area">
+        <p class="demo-placeholder">Click an input above, or type one yourself and press Enter.</p>
+      </div>
+      <div class="demo-inputbar">
+        <button class="nb-grid-btn" tabindex="-1" aria-hidden="true">
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true">
+            <rect x="1.5" y="1.5" width="15" height="15" rx="2"/>
+            <line x1="9" y1="1.5" x2="9" y2="16.5"/>
+            <line x1="1.5" y1="9" x2="16.5" y2="9"/>
           </svg>
+        </button>
+        <input type="text" class="demo-input" id="demo-input" placeholder="Type an example input…" autocomplete="off" spellcheck="false" />
+        <div class="nb-mic-wrap">
+          <button class="nb-mic-btn" id="demo-mic-btn" tabindex="-1" aria-hidden="true">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
+              <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+              <line x1="12" y1="19" x2="12" y2="23"/>
+              <line x1="8" y1="23" x2="16" y2="23"/>
+            </svg>
+          </button>
         </div>
-        <h3>Accessibility Features</h3>
-        <p>Voice input and audio output.</p>
+      </div>
+    </div>
+    </div>
+
+    <div class="demo-callouts">
+      <div class="demo-callouts-head scroll-reveal">
+        <h3 class="demo-callouts-title">Why educators choose Ninebark</h3>
+      </div>
+      <div class="demo-callout-list">
+        <div class="demo-callout scroll-reveal">
+          <h3>Natural Language</h3>
+          <p>Students type mathematics the way they already think instead of navigating menus and memorizing button sequences.</p>
+        </div>
+        <div class="demo-callout scroll-reveal">
+          <h3>Teacher Controlled</h3>
+          <p>Choose exactly which calculator functions and accessibility features are available for your classroom.</p>
+        </div>
+        <div class="demo-callout scroll-reveal">
+          <h3>Accessible</h3>
+          <p>Voice input, audio output, and display settings help support a wider range of learners.</p>
+        </div>
+        <div class="demo-callout scroll-reveal">
+          <h3>Built for Modern Classrooms</h3>
+          <p>Designed around today's students, devices, and teaching environments.</p>
+        </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- Founder -->
-<section id="about">
+<!-- Pilot Program -->
+<section id="pilot">
   <div class="container">
-    <p class="section-label">Founder</p>
-    <div class="about-layout">
-      <div class="about-bio">
-        <h2>Dylan Winning</h2>
-        <p>
-          Dylan is a student at Haverford College studying Mathematics and Philosophy. He is building Ninebark through the Haverford Entrepreneurship Program's Innovation Incubator.
-        </p>
-        
-        <div class="about-links">
-          <a href="https://www.linkedin.com/in/dylanwinning" target="_blank" rel="noopener noreferrer">LinkedIn</a>
-          <a href="https://github.com/dylanwinning" target="_blank" rel="noopener noreferrer">GitHub</a>
-          <a href="mailto:dwinning@haverford.edu">Email</a>
+    <div class="pilot-intro scroll-reveal">
+      <p class="section-label">Pilot Program</p>
+      <h2 class="pilot-headline"><span class="pilot-headline-glow">Become a Pilot Partner</span></h2>
+      <p class="pilot-sub">Help shape the future of classroom calculators. We're looking for a small number of educators to pilot Ninebark and provide feedback from real classroom use.</p>
+    </div>
+
+    <div class="pilot-columns scroll-reveal">
+      <div class="pilot-col">
+        <p class="pilot-col-label">What you'll receive</p>
+        <ul class="pilot-list">
+          <li><strong>Free</strong> access to Ninebark during the pilot</li>
+          <li>Direct support from the founder</li>
+          <li>Opportunity to influence future features</li>
+        </ul>
+      </div>
+      <div class="pilot-col">
+        <p class="pilot-col-label">What we're asking</p>
+        <ul class="pilot-list">
+          <li>Students use Ninebark occasionally throughout the Fall 2026 semester</li>
+          <li>Share occasional feedback about what worked and what didn't</li>
+          <li>Participate in a brief follow-up conversation</li>
+        </ul>
+      </div>
+      <div class="pilot-col">
+        <p class="pilot-col-label">Who we're looking for</p>
+        <p class="pilot-col-text">Middle and high school educators interested in trying new instructional technology.</p>
+      </div>
+    </div>
+
+    <p class="pilot-note scroll-reveal">These pilot programs will help us refine Ninebark with feedback from educators before a broader launch.</p>
+
+    <div class="pilot-cta scroll-reveal">
+      <p class="pilot-cta-text">Interested in piloting Ninebark?</p>
+      <span class="pilot-email-glow">
+        <a href="mailto:dylan@ninebark.us" class="btn-primary">Email Founder</a>
+      </span>
+    </div>
+  </div>
+</section>
+
+<!-- FAQs -->
+<section id="faqs">
+  <div class="container">
+    <div class="faqs-intro scroll-reveal">
+      <p class="section-label">FAQs</p>
+      <h2 class="faqs-headline">Frequently Asked Questions</h2>
+    </div>
+
+    <div class="faq-list">
+      <details class="faq-item faq-item--founder scroll-reveal">
+        <summary class="faq-question">Who is building Ninebark?</summary>
+        <div class="faq-item-body">
+          <div class="faq-founder">
+            <figure class="faq-founder-photo">
+              <img src="founder.jpg" alt="Dylan Winning" />
+              <figcaption>Dylan Winning, Founder</figcaption>
+            </figure>
+            <p class="faq-answer">Dylan is a student at Haverford College studying Mathematics and Philosophy.</p>
+          </div>
         </div>
-      </div>
-      <div class="about-photo">
-        <img src="founder.jpg" alt="Dylan Winning, founder of Ninebark" />
-      </div>
+      </details>
+
+      <details class="faq-item scroll-reveal">
+        <summary class="faq-question">Is Ninebark AI?</summary>
+        <div class="faq-item-body">
+          <p class="faq-answer">No. Ninebark is a deterministic calculator that interprets natural language with fixed rules, so it always gives the same result for the same input.</p>
+        </div>
+      </details>
+
+      <details class="faq-item scroll-reveal">
+        <summary class="faq-question">Where is Ninebark in its development?</summary>
+        <div class="faq-item-body">
+          <p class="faq-answer">Ninebark's prototype has been built and is suitable for use in pilots.</p>
+        </div>
+      </details>
+
+      <details class="faq-item scroll-reveal">
+        <summary class="faq-question">What math can Ninebark currently support?</summary>
+        <div class="faq-item-body">
+          <p class="faq-answer">Ninebark supports almost everything a TI-84 can. A complete list of its mathematical capabilities is available in the prototype.</p>
+        </div>
+      </details>
+
+      <details class="faq-item scroll-reveal">
+        <summary class="faq-question">How can I see more of Ninebark beyond the example inputs?</summary>
+        <div class="faq-item-body">
+          <p class="faq-answer"><a href="#contact" class="faq-inline-btn">Reach out</a> to request a demo.</p>
+        </div>
+      </details>
+
+      <details class="faq-item scroll-reveal">
+        <summary class="faq-question">I'm interested in supporting Ninebark. How can I get involved?</summary>
+        <div class="faq-item-body">
+          <p class="faq-answer">I'm always interested in connecting with educators and industry professionals who share Ninebark's mission. Send me an email and I'd be happy to set up a conversation.</p>
+          <p class="faq-signature">— Dylan Winning, Founder</p>
+        </div>
+      </details>
     </div>
   </div>
 </section>
@@ -682,7 +2454,7 @@
     <p class="section-label">Contact</p>
     <h2>Get in Touch</h2>
     <p class="contact-intro">
-      Questions, feedback, or interested in collaborating? 
+      Message sent directly to Founder.
     </p>
     <div data-fs-success>Message sent. Thanks for reaching out!</div>
 
@@ -746,8 +2518,723 @@
     </svg>
     <span class="footer-wordmark">Ninebark</span>
   </a>
-  <span>Updated Jun 2026</span>
+  <div class="footer-right">
+    <div class="footer-social">
+      <a href="https://www.linkedin.com/company/ninebark1" class="footer-social-link" target="_blank" rel="noopener noreferrer" aria-label="Ninebark on LinkedIn">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+          <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.446-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+        </svg>
+      </a>
+      <a href="https://x.com/ninebark_" class="footer-social-link" target="_blank" rel="noopener noreferrer" aria-label="Ninebark on X">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+          <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+        </svg>
+      </a>
+    </div>
+    <span>Updated Jul 2026</span>
+  </div>
 </footer>
+
+<script>
+(function () {
+  var root = document.getElementById('hero-examples');
+  if (!root) return;
+
+  var slides = Array.prototype.slice.call(root.querySelectorAll('.hero-example-slide'));
+  var dots   = Array.prototype.slice.call(root.querySelectorAll('.hero-dot'));
+  var index  = 0;
+  var timers = [];
+
+  function later(fn, ms) { var t = setTimeout(fn, ms); timers.push(t); return t; }
+  function clearTimers()  { timers.forEach(clearTimeout); timers = []; }
+
+  function show(i) {
+    index = i;
+    slides.forEach(function(s, si) { s.classList.toggle('is-active', si === i); });
+    dots.forEach(function(d, di) { d.classList.toggle('is-active', di === i); });
+  }
+
+  function setPhase(slide, phase) {
+    slide.classList.toggle('is-typing', phase === 'typing');
+    slide.classList.toggle('is-result', phase === 'result');
+  }
+
+  /* Types the slide's query into its input bar, character by character with
+     a blinking cursor (mirroring the intro animation's typing scene), then
+     clears it again to simulate pressing enter — the input goes back to
+     empty just like it does in the intro, and the result card takes the
+     visual elevation. */
+  function typeAndSolve(slide, cb) {
+    var typedEl = slide.querySelector('.hero-typed');
+    var query = typedEl.getAttribute('data-query');
+
+    setPhase(slide, 'typing');
+    typedEl.textContent = '';
+
+    var i = 0;
+    (function tick() {
+      typedEl.textContent = query.slice(0, i);
+      if (i++ <= query.length) {
+        later(tick, i === 1 ? 220 : 55 + Math.random() * 45);
+      } else {
+        later(function() {
+          typedEl.textContent = '';
+          later(function() {
+            setPhase(slide, 'result');
+            later(cb, 2600); // hold time to read the result before moving on
+          }, 200);
+        }, 450);
+      }
+    })();
+  }
+
+  function runCycle(i) {
+    show(i);
+    typeAndSolve(slides[i], function() { runCycle((i + 1) % slides.length); });
+  }
+
+  dots.forEach(function(dot, i) {
+    dot.addEventListener('click', function() {
+      clearTimers();
+      runCycle(i);
+    });
+  });
+
+  /* Starts typing immediately on page load — no intro animation gates it. */
+  runCycle(0);
+})();
+</script>
+
+<script>
+(function () {
+  var els = Array.prototype.slice.call(document.querySelectorAll('.scroll-reveal'));
+  if (!els.length) return;
+
+  if (!('IntersectionObserver' in window)) {
+    els.forEach(function(el) { el.classList.add('is-visible'); });
+    return;
+  }
+
+  var observer = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('is-visible');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.25, rootMargin: '0px 0px -60px 0px' });
+
+  els.forEach(function(el, i) {
+    el.style.transitionDelay = (i % 3) * 0.12 + 's';
+    observer.observe(el);
+  });
+})();
+</script>
+
+<script>
+(function () {
+  var root = document.getElementById('demo');
+  if (!root) return;
+
+  var resultArea = document.getElementById('demo-result-area');
+  var input      = document.getElementById('demo-input');
+  var chips      = root.querySelectorAll('.demo-chip');
+
+  function normalize(s) { return s.toLowerCase().replace(/\s+/g, ''); }
+
+  function escapeHtml(s) {
+    return s.replace(/[&<>"]/g, function(c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c];
+    });
+  }
+
+  // ── Graph engine — mirrors calculator/graph.ts's niceStep() and
+  // GraphPanel.tsx's draw(): default -10..10 window, 1-2-5 nice-number grid,
+  // ring-dot intercept markers. ────────────────────────────────────────────
+  function niceStep(range, targetCount) {
+    targetCount = targetCount || 8;
+    if (range <= 0) return 1;
+    var rawStep = range / targetCount;
+    var magnitude = Math.pow(10, Math.floor(Math.log10(rawStep)));
+    var normalized = rawStep / magnitude;
+    var nice = normalized < 1.5 ? 1 : normalized < 3.5 ? 2 : normalized < 7.5 ? 5 : 10;
+    return nice * magnitude;
+  }
+
+  function fmtNum(v) { return String(+v.toFixed(4)); }
+
+  // ── Interactive graph panel — ports GraphPanel.tsx's draw()/pointer/wheel
+  // logic onto a plain <canvas>: drag to pan, wheel or +/-/reset to zoom,
+  // hover to trace the curve, click a feature point (ring dot) for its
+  // coordinates. Same colors, same math, same interactions as the real app;
+  // just without the multi-expression sidebar (this demo only ever graphs
+  // the one function the visitor typed). ──────────────────────────────────
+  function initGraphPanel(panelEl, fn) {
+    var canvas   = panelEl.querySelector('.demo-graph-canvas');
+    var ctx      = canvas.getContext('2d');
+    var readout  = panelEl.querySelector('.demo-graph-readout');
+    var tooltip  = panelEl.querySelector('.demo-graph-tooltip');
+    var W = canvas.width, H = canvas.height;
+
+    var DEFAULT_WIN = { xMin: -10, xMax: 10, yMin: -10, yMax: 10 };
+    var win = { xMin: -10, xMax: 10, yMin: -10, yMax: 10 };
+    var traceX = null;
+    var selected = null;
+    var featurePoints = [];
+    var dragState = null;
+
+    function toX(x) { return ((x - win.xMin) / (win.xMax - win.xMin)) * W; }
+    function toY(y) { return H - ((y - win.yMin) / (win.yMax - win.yMin)) * H; }
+
+    function ringDot(cx, cy) {
+      ctx.fillStyle = '#174518';
+      ctx.beginPath(); ctx.arc(cx, cy, 5, 0, 2 * Math.PI); ctx.fill();
+      ctx.fillStyle = '#fafaf9';
+      ctx.beginPath(); ctx.arc(cx, cy, 2.5, 0, 2 * Math.PI); ctx.fill();
+    }
+
+    function draw() {
+      ctx.clearRect(0, 0, W, H);
+      ctx.fillStyle = '#fafaf9';
+      ctx.fillRect(0, 0, W, H);
+
+      var xScl = niceStep(win.xMax - win.xMin);
+      var yScl = niceStep(win.yMax - win.yMin);
+
+      ctx.strokeStyle = '#e7e5e4';
+      ctx.lineWidth = 1;
+      for (var gx = Math.ceil(win.xMin / xScl) * xScl; gx <= win.xMax; gx += xScl) {
+        ctx.beginPath(); ctx.moveTo(toX(gx), 0); ctx.lineTo(toX(gx), H); ctx.stroke();
+      }
+      for (var gy = Math.ceil(win.yMin / yScl) * yScl; gy <= win.yMax; gy += yScl) {
+        ctx.beginPath(); ctx.moveTo(0, toY(gy)); ctx.lineTo(W, toY(gy)); ctx.stroke();
+      }
+
+      ctx.strokeStyle = '#c5bfbb';
+      ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.moveTo(toX(0), 0); ctx.lineTo(toX(0), H); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(0, toY(0)); ctx.lineTo(W, toY(0)); ctx.stroke();
+
+      ctx.fillStyle = '#a8a29e';
+      ctx.font = '11px system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      var y0px = toY(0);
+      for (var lx = Math.ceil(win.xMin / xScl) * xScl; lx <= win.xMax; lx += xScl) {
+        if (Math.abs(lx) < xScl * 0.01) continue;
+        var labelY = y0px + 14 > H - 2 ? y0px - 6 : y0px + 14;
+        ctx.fillText(fmtNum(lx), toX(lx), labelY);
+      }
+      ctx.textAlign = 'left';
+      var x0px = toX(0);
+      for (var ly = Math.ceil(win.yMin / yScl) * yScl; ly <= win.yMax; ly += yScl) {
+        if (Math.abs(ly) < yScl * 0.01) continue;
+        var lxpos = x0px + 4 > W - 34 ? x0px - 34 : x0px + 4;
+        ctx.fillText(fmtNum(ly), lxpos, toY(ly) + 4);
+      }
+
+      var N = 400, started = false;
+      ctx.strokeStyle = '#174518';
+      ctx.lineWidth = 2.5;
+      ctx.lineCap = 'round';
+      ctx.beginPath();
+      for (var i = 0; i <= N; i++) {
+        var x = win.xMin + (i / N) * (win.xMax - win.xMin);
+        var y = fn(x);
+        if (y == null || !isFinite(y) || y < win.yMin - (win.yMax - win.yMin) * 0.5 || y > win.yMax + (win.yMax - win.yMin) * 0.5) { started = false; continue; }
+        if (!started) { ctx.moveTo(toX(x), toY(y)); started = true; }
+        else ctx.lineTo(toX(x), toY(y));
+      }
+      ctx.stroke();
+
+      featurePoints = [];
+      if (0 >= win.xMin && 0 <= win.xMax) {
+        var y0 = fn(0);
+        if (isFinite(y0) && y0 >= win.yMin && y0 <= win.yMax) {
+          ringDot(toX(0), toY(y0));
+          featurePoints.push({ xWorld: 0, yWorld: y0, kind: 'y-intercept' });
+        }
+      }
+      var prevX = null, prevY = null, lastRootX = null;
+      for (var j = 0; j <= N; j++) {
+        var xv = win.xMin + (j / N) * (win.xMax - win.xMin);
+        var yv = fn(xv);
+        var rootX = null;
+        if (isFinite(yv) && Math.abs(yv) < 1e-9) {
+          rootX = xv;
+        } else if (prevY != null && isFinite(prevY) && isFinite(yv) && (prevY < 0) !== (yv < 0)) {
+          var t = prevY / (prevY - yv);
+          rootX = prevX + t * (xv - prevX);
+        }
+        if (rootX != null && rootX >= win.xMin && rootX <= win.xMax) {
+          if (lastRootX == null || Math.abs(rootX - lastRootX) > 1e-6) {
+            ringDot(toX(rootX), toY(0));
+            featurePoints.push({ xWorld: rootX, yWorld: 0, kind: 'x-intercept' });
+            lastRootX = rootX;
+          }
+        }
+        prevX = xv; prevY = yv;
+      }
+
+      if (traceX != null) {
+        ctx.strokeStyle = 'rgba(87,83,78,0.2)';
+        ctx.lineWidth = 1;
+        ctx.setLineDash([4, 4]);
+        ctx.beginPath(); ctx.moveTo(toX(traceX), 0); ctx.lineTo(toX(traceX), H); ctx.stroke();
+        ctx.setLineDash([]);
+        var ty = fn(traceX);
+        if (isFinite(ty)) {
+          ctx.fillStyle = '#174518'; ctx.strokeStyle = '#fafaf9'; ctx.lineWidth = 2;
+          ctx.beginPath(); ctx.arc(toX(traceX), toY(ty), 5, 0, 2 * Math.PI); ctx.fill(); ctx.stroke();
+        }
+      }
+
+      if (selected) {
+        var cx = toX(selected.xWorld), cy = toY(selected.yWorld);
+        if (cx >= 0 && cx <= W && cy >= 0 && cy <= H) {
+          ctx.strokeStyle = 'rgba(23,69,24,0.3)'; ctx.lineWidth = 1; ctx.setLineDash([4, 4]);
+          ctx.beginPath(); ctx.moveTo(cx, cy); ctx.lineTo(cx, toY(0)); ctx.stroke();
+          ctx.setLineDash([]);
+          ctx.fillStyle = '#174518';
+          ctx.beginPath(); ctx.arc(cx, cy, 7, 0, 2 * Math.PI); ctx.fill();
+          ctx.fillStyle = '#fff';
+          ctx.beginPath(); ctx.arc(cx, cy, 3, 0, 2 * Math.PI); ctx.fill();
+        }
+      }
+    }
+
+    function updateReadout() {
+      if (traceX != null) {
+        var y = fn(traceX);
+        readout.innerHTML =
+          '<div><p class="demo-graph-readout-label">Trace</p><p class="demo-graph-readout-value">x = ' + fmtNum(traceX) + '</p></div>' +
+          (isFinite(y)
+            ? '<div><p class="demo-graph-readout-label">F(x)</p><p class="demo-graph-readout-value" style="color:#174518">' + fmtNum(y) + '</p></div>'
+            : '');
+      } else {
+        readout.innerHTML =
+          '<div class="demo-graph-readout-empty">' +
+            '<div><p class="demo-graph-readout-label">Trace</p><p class="demo-graph-readout-value muted">x = —</p></div>' +
+            '<div><p class="demo-graph-readout-label">F(x)</p><p class="demo-graph-readout-value muted">—</p></div>' +
+          '</div>';
+      }
+    }
+
+    function updateTooltip() {
+      if (!selected) { tooltip.hidden = true; return; }
+      tooltip.hidden = false;
+      var leftPct = Math.max(5, Math.min(95, ((selected.xWorld - win.xMin) / (win.xMax - win.xMin)) * 100));
+      var topPct  = Math.max(5, Math.min(85, (1 - (selected.yWorld - win.yMin) / (win.yMax - win.yMin)) * 100));
+      tooltip.style.left = leftPct + '%';
+      tooltip.style.top  = topPct + '%';
+      tooltip.innerHTML =
+        '<span class="demo-graph-tooltip-dot"></span>' +
+        '<span>' + selected.kind + '</span>' +
+        '<span class="demo-graph-tooltip-sep">·</span>' +
+        '<span>(' + fmtNum(selected.xWorld) + ', ' + fmtNum(selected.yWorld) + ')</span>';
+    }
+
+    function render() { draw(); updateReadout(); updateTooltip(); }
+
+    function canvasPos(e) {
+      var rect = canvas.getBoundingClientRect();
+      return {
+        px: (e.clientX - rect.left) / rect.width * W,
+        py: (e.clientY - rect.top) / rect.height * H,
+      };
+    }
+
+    canvas.addEventListener('pointerdown', function(e) {
+      canvas.setPointerCapture(e.pointerId);
+      var pos = canvasPos(e);
+      var nearest = null, nearestDist2 = 24 * 24;
+      featurePoints.forEach(function(fp) {
+        var dx = toX(fp.xWorld) - pos.px, dy = toY(fp.yWorld) - pos.py;
+        var d2 = dx * dx + dy * dy;
+        if (d2 < nearestDist2) { nearestDist2 = d2; nearest = fp; }
+      });
+      if (nearest) {
+        selected = nearest;
+        traceX = nearest.xWorld;
+        render();
+        return;
+      }
+      selected = null;
+      dragState = { startX: e.clientX, startY: e.clientY, winSnap: { xMin: win.xMin, xMax: win.xMax, yMin: win.yMin, yMax: win.yMax } };
+      render();
+    });
+
+    canvas.addEventListener('pointermove', function(e) {
+      var rect = canvas.getBoundingClientRect();
+      var x = win.xMin + ((e.clientX - rect.left) / rect.width) * (win.xMax - win.xMin);
+      if (dragState) {
+        var snap = dragState.winSnap;
+        var dx = (e.clientX - dragState.startX) / rect.width * (snap.xMax - snap.xMin);
+        var dy = (e.clientY - dragState.startY) / rect.height * (snap.yMax - snap.yMin);
+        win.xMin = snap.xMin - dx; win.xMax = snap.xMax - dx;
+        win.yMin = snap.yMin + dy; win.yMax = snap.yMax + dy;
+        traceX = null;
+        render();
+      } else {
+        traceX = x;
+        render();
+      }
+    });
+
+    canvas.addEventListener('pointerup', function() { dragState = null; });
+    canvas.addEventListener('pointerleave', function() { if (!dragState) { traceX = null; render(); } });
+
+    canvas.addEventListener('wheel', function(e) {
+      e.preventDefault();
+      var rect = canvas.getBoundingClientRect();
+      var mx = win.xMin + ((e.clientX - rect.left) / rect.width) * (win.xMax - win.xMin);
+      var my = win.yMin + (1 - (e.clientY - rect.top) / rect.height) * (win.yMax - win.yMin);
+      var factor = e.deltaY > 0 ? 1.15 : 1 / 1.15;
+      win.xMin = mx + (win.xMin - mx) * factor; win.xMax = mx + (win.xMax - mx) * factor;
+      win.yMin = my + (win.yMin - my) * factor; win.yMax = my + (win.yMax - my) * factor;
+      render();
+    }, { passive: false });
+
+    function zoom(factor) {
+      var cx = (win.xMin + win.xMax) / 2, cy = (win.yMin + win.yMax) / 2;
+      var hw = (win.xMax - win.xMin) / 2 * factor, hh = (win.yMax - win.yMin) / 2 * factor;
+      win.xMin = cx - hw; win.xMax = cx + hw;
+      win.yMin = cy - hh; win.yMax = cy + hh;
+      render();
+    }
+
+    panelEl.querySelectorAll('[data-zoom]').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        var action = btn.getAttribute('data-zoom');
+        if (action === 'in') zoom(1 / 1.5);
+        else if (action === 'out') zoom(1.5);
+        else {
+          win = { xMin: DEFAULT_WIN.xMin, xMax: DEFAULT_WIN.xMax, yMin: DEFAULT_WIN.yMin, yMax: DEFAULT_WIN.yMax };
+          selected = null; traceX = null;
+          render();
+        }
+      });
+    });
+
+    render();
+  }
+
+  // Every formal string, computed value, fraction form, and spoken sentence
+  // below was captured by running the actual prototype (Ninebark-Prototype,
+  // src/ui/ComputationCard.tsx + useSpeech.ts) locally and reading its real
+  // output for these exact 5 queries — not approximated.
+  var ANSWERS = [
+    { kind: 'real', query: 'mean of 2, 4, 8, 9', interp: 'mean({2, 4, 8, 9})', decimal: '5.75',
+      fraction: { whole: 5, num: 3, den: 4 },
+      speak: 'mean of 2, 4, 8, 9 is approximately 5.75.' },
+    { kind: 'solve', query: 'solve 2x+3=9', interp: 'solve(((2 * x) + 3)=9)', sym: 'x', value: '3',
+      speak: 'solve 2x+3=9 is a statistics result.' },
+    { kind: 'real', query: 'sin of 60 degrees', interp: 'sin(60°)', decimal: '0.8660254038',
+      fraction: '√3/2',
+      speak: 'sin of 60 degrees is approximately 0.86603.' },
+    { kind: 'real', query: '64 percent of 176', interp: '((64 / 100) * 176)', decimal: '112.64',
+      fraction: { whole: 112, num: 16, den: 25 },
+      speak: '64 percent of 176 is approximately 112.64.' },
+    { kind: 'graph', query: 'graph 3x plus 6', formal: '((3 * x) + 6)', fn: function(x) { return 3 * x + 6; },
+      speak: 'Graphed ((3 * x) + 6).' }
+  ];
+
+  var LOOKUP = {};
+  ANSWERS.forEach(function(a) { LOOKUP[normalize(a.query)] = a; });
+
+  var SPEAKER_ICON = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>';
+  var REUSE_ICON = '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 14 4 19 9 24"/><path d="M20 9a9 9 0 0 0-9 9v1"/></svg>';
+  var RESET_ICON = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>';
+
+  function reuseHtml(query) {
+    return '<button type="button" class="nb-action" data-reuse="' + escapeHtml(query) + '">' + REUSE_ICON + 'Reuse</button>';
+  }
+
+  function speakerHtml(speak) {
+    return '<button type="button" class="nb-speaker-btn" data-speak="' + escapeHtml(speak) + '" aria-label="Read result aloud">' + SPEAKER_ICON + '</button>';
+  }
+
+  // fraction is either a plain string ("√3/2") or a mixed-number object
+  // { whole, num, den } (e.g. 5 3/4) — matches FractionDisplay/StackedFraction.
+  function fractionText(fraction) {
+    if (typeof fraction === 'string') return fraction;
+    return fraction.whole + ' ' + fraction.num + '/' + fraction.den;
+  }
+
+  function fractionHtml(fraction) {
+    if (typeof fraction === 'string') return escapeHtml(fraction);
+    return escapeHtml(String(fraction.whole)) +
+      '<span class="nb-stacked-fraction">' +
+        '<span>' + escapeHtml(String(fraction.num)) + '</span>' +
+        '<span class="nb-frac-den">' + escapeHtml(String(fraction.den)) + '</span>' +
+      '</span>';
+  }
+
+  function renderAnswer(a) {
+    var html = '<div class="nb-result-card">' + '<div class="nb-result-query">' + escapeHtml(a.query) + '</div>';
+
+    if (a.kind === 'graph') {
+      // Matches ComputationCard's "action" outcome: no inline chart in the
+      // card itself — just a Graphed confirmation, same as the real app.
+      html +=
+        '<div class="nb-graphed-line">' +
+          '<span class="nb-graphed-label">Graphed</span>' +
+          '<code class="nb-graphed-code">' + escapeHtml(a.formal) + '</code>' +
+        '</div>' +
+        '<p class="nb-graphed-caption">Switched to graph view</p>' +
+        '<div class="nb-result-footer"><div class="nb-result-footer-left">' + reuseHtml(a.query) + '</div></div>' +
+      '</div>';
+      html +=
+        '<div class="demo-graph-panel">' +
+          '<div class="demo-graph-readout"></div>' +
+          '<div class="demo-graph-canvas-wrap">' +
+            '<canvas class="demo-graph-canvas" width="640" height="400"></canvas>' +
+            '<div class="demo-graph-tooltip" hidden></div>' +
+            '<div class="demo-graph-zoom">' +
+              '<button type="button" class="demo-graph-zoom-btn" data-zoom="in" aria-label="Zoom in">+</button>' +
+              '<button type="button" class="demo-graph-zoom-btn" data-zoom="out" aria-label="Zoom out">−</button>' +
+              '<button type="button" class="demo-graph-zoom-btn" data-zoom="reset" aria-label="Reset view">' + RESET_ICON + '</button>' +
+            '</div>' +
+          '</div>' +
+        '</div>';
+      resultArea.innerHTML = '<div class="demo-graph-result">' + html + '</div>';
+      wireResultInteractions(a);
+      initGraphPanel(resultArea.querySelector('.demo-graph-panel'), a.fn);
+      return;
+    }
+
+    html +=
+      '<div class="nb-result-interp">' +
+        '<span class="nb-interp-label">Interpreted as</span>' +
+        '<code class="nb-interp-code">' + escapeHtml(a.interp) + '</code>' +
+      '</div>';
+
+    // Recall wrapper — matches ComputationCard's onRecall: click the value to
+    // paste it into the input (the decimal string for real values, the
+    // literal word "Recalled" for bundle/solve values).
+    var recallHint = '<span class="nb-recall-hint">tap to use ↩</span>';
+
+    if (a.kind === 'solve') {
+      html +=
+        '<div class="nb-solve-block nb-recall" data-recall="Recalled">' +
+          '<p class="nb-solve-label">Equation Solution</p>' +
+          '<div class="nb-solve-row">' +
+            '<span class="nb-solve-sym">' + escapeHtml(a.sym) + '</span>' +
+            '<span class="nb-solve-eq">=</span>' +
+            '<span class="nb-solve-value">' + escapeHtml(a.value) + '</span>' +
+          '</div>' +
+          recallHint +
+        '</div>' +
+        '<div class="nb-result-footer"><div class="nb-result-footer-left">' + reuseHtml(a.query) + speakerHtml(a.speak) + '</div></div>';
+    } else {
+      var showToggle = a.decimal !== fractionText(a.fraction);
+      html +=
+        '<div class="nb-result-value nb-recall" data-recall="' + escapeHtml(a.decimal) + '">' +
+          '<span class="nb-value-text">' + escapeHtml(a.decimal) + '</span>' +
+          recallHint +
+        '</div>' +
+        '<div class="nb-result-footer">' +
+          '<div class="nb-result-footer-left">' + reuseHtml(a.query) + speakerHtml(a.speak) + '</div>' +
+          (showToggle ?
+            '<div class="nb-result-footer-right">' +
+              '<span class="nb-decfrac-label is-active" data-mode="decimal">Decimal</span>' +
+              '<span class="nb-toggle-pill" tabindex="0" role="switch" aria-checked="false"></span>' +
+              '<span class="nb-decfrac-label" data-mode="fraction">Fraction</span>' +
+            '</div>'
+          : '') +
+        '</div>';
+    }
+
+    html += '</div>';
+    resultArea.innerHTML = html;
+    wireResultInteractions(a);
+  }
+
+  function wireResultInteractions(a) {
+    var reuseBtn = resultArea.querySelector('[data-reuse]');
+    if (reuseBtn) {
+      reuseBtn.addEventListener('click', function() {
+        input.value = reuseBtn.getAttribute('data-reuse');
+        input.focus();
+      });
+    }
+
+    var speakBtn = resultArea.querySelector('[data-speak]');
+    if (speakBtn) {
+      speakBtn.addEventListener('click', function() {
+        if (!('speechSynthesis' in window)) return;
+        if (speakBtn.classList.contains('is-speaking')) {
+          window.speechSynthesis.cancel();
+          speakBtn.classList.remove('is-speaking');
+          return;
+        }
+        window.speechSynthesis.cancel();
+        var utter = new SpeechSynthesisUtterance(speakBtn.getAttribute('data-speak'));
+        utter.onstart = function() { speakBtn.classList.add('is-speaking'); };
+        utter.onend   = function() { speakBtn.classList.remove('is-speaking'); };
+        utter.onerror = function() { speakBtn.classList.remove('is-speaking'); };
+        window.speechSynthesis.speak(utter);
+      });
+    }
+
+    var recallEl = resultArea.querySelector('.nb-recall');
+    if (recallEl) {
+      recallEl.addEventListener('click', function() {
+        var text = recallEl.getAttribute('data-recall');
+        var trimmed = input.value.trim();
+        input.value = trimmed ? trimmed + ' ' + text : text;
+        input.focus();
+      });
+    }
+
+    var pill = resultArea.querySelector('.nb-toggle-pill');
+    if (pill) {
+      var valueTextEl = resultArea.querySelector('.nb-value-text');
+      var decLabel    = resultArea.querySelector('[data-mode="decimal"]');
+      var fracLabel   = resultArea.querySelector('[data-mode="fraction"]');
+
+      function setMode(mode) {
+        var isFraction = mode === 'fraction';
+        pill.classList.toggle('is-fraction', isFraction);
+        pill.setAttribute('aria-checked', String(isFraction));
+        decLabel.classList.toggle('is-active', !isFraction);
+        fracLabel.classList.toggle('is-active', isFraction);
+        valueTextEl.innerHTML = isFraction ? fractionHtml(a.fraction) : escapeHtml(a.decimal);
+      }
+
+      pill.addEventListener('click', function() {
+        setMode(pill.classList.contains('is-fraction') ? 'decimal' : 'fraction');
+      });
+      pill.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          setMode(pill.classList.contains('is-fraction') ? 'decimal' : 'fraction');
+        }
+      });
+      decLabel.addEventListener('click', function() { setMode('decimal'); });
+      fracLabel.addEventListener('click', function() { setMode('fraction'); });
+    }
+  }
+
+  function renderLimitMessage() {
+    resultArea.innerHTML =
+      '<p class="demo-limit-message">This is a limited demonstration of Ninebark. Please choose one of the five example inputs above.</p>';
+  }
+
+  function submitQuery(raw) {
+    var trimmed = raw.trim();
+    if (!trimmed) return;
+    var match = LOOKUP[normalize(trimmed)];
+    if (match) {
+      renderAnswer(match);
+    } else {
+      renderLimitMessage();
+    }
+    input.value = '';
+  }
+
+  input.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      submitQuery(input.value);
+    }
+  });
+
+  /* Clicking an example prompt only fills the input — the visitor still
+     presses Enter to submit, same as typing it themselves. */
+  chips.forEach(function(chip) {
+    chip.addEventListener('click', function() {
+      input.value = chip.getAttribute('data-query');
+      input.focus();
+    });
+  });
+
+  // ── Voice input — mirrors ui/useSpeech.ts's useSpeechInput: SpeechRecognition
+  // feature-detected, continuous=false, interimResults=true, en-US. Per the
+  // real app's DEFAULT_SETTINGS.autoSubmit=false, a final transcript fills
+  // the input without submitting — the visitor still presses Enter. ────────
+  (function () {
+    var micWrap = root.querySelector('.demo-inputbar .nb-mic-wrap');
+    var micBtn  = micWrap ? document.getElementById('demo-mic-btn') : null;
+    if (!micBtn) return;
+
+    var SRC = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SRC) {
+      micBtn.style.opacity = '0.3';
+      micBtn.setAttribute('title', 'Voice input is not available in this browser. Typing still works.');
+      return;
+    }
+
+    micBtn.removeAttribute('tabindex');
+    micBtn.removeAttribute('aria-hidden');
+    micBtn.classList.add('nb-mic-live');
+    micBtn.setAttribute('aria-label', 'Start voice input');
+
+    var listening = false;
+    var recog     = null;
+    var errorTip  = null;
+
+    function clearError() {
+      if (errorTip) { errorTip.remove(); errorTip = null; }
+    }
+
+    function showError(msg) {
+      clearError();
+      errorTip = document.createElement('p');
+      errorTip.className = 'nb-mic-error';
+      errorTip.textContent = msg;
+      micWrap.appendChild(errorTip);
+    }
+
+    function setListening(v) {
+      listening = v;
+      micBtn.classList.toggle('is-listening', listening);
+      micBtn.setAttribute('aria-label', listening ? 'Stop listening' : 'Start voice input');
+    }
+
+    function stopListening() {
+      if (recog) { recog.stop(); recog = null; }
+      setListening(false);
+    }
+
+    function startListening() {
+      if (recog) recog.stop();
+      recog = new SRC();
+      recog.continuous     = false;
+      recog.interimResults = true;
+      recog.lang            = 'en-US';
+
+      recog.onstart = function() { setListening(true); clearError(); };
+
+      recog.onresult = function(e) {
+        var final = '', interim = '';
+        for (var i = e.resultIndex; i < e.results.length; i++) {
+          var t = e.results[i][0].transcript;
+          if (e.results[i].isFinal) final += t; else interim += t;
+        }
+        if (interim) input.value = interim;
+        if (final)   input.value = final.trim();
+      };
+
+      recog.onerror = function(e) {
+        if (e.error === 'not-allowed') {
+          showError('Microphone access was denied. Check your browser settings.');
+        } else if (e.error !== 'no-speech') {
+          showError('Voice input failed. Please try again.');
+        }
+      };
+
+      recog.onend = function() { recog = null; setListening(false); };
+
+      recog.start();
+    }
+
+    micBtn.addEventListener('click', function() {
+      if (listening) stopListening(); else startListening();
+      input.focus();
+    });
+  })();
+})();
+</script>
 
 </body>
 </html>
